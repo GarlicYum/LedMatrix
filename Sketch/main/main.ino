@@ -182,7 +182,6 @@ int brightness = 16;
 void MegaManRunningAnimation();
 void UpdateFrame(int tickCount, int frameCount);
 void HandleIRInput();
-void Reset();
 int convertIndex(int i);
 void updateBrightness();
 

@@ -162,7 +162,8 @@ enum eState
   State_Anim8,
   State_Anim9,
   State_Cycle,
-  State_Snake
+  State_Snake,
+  State_Generated
 };
 
 // Megaman Running
@@ -211,6 +212,7 @@ void loop()
     case State_Anim9:
     case State_Cycle:
     case State_Snake:
+    case State_Generated:
       MegaManRunningAnimation();
       break;
   }

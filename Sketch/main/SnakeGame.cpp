@@ -161,8 +161,8 @@ void SnakeGame::spawnApple()
 {
   do
   {
-    _applePos.X = rand() % (ROW_SIZE - 1) + 1;
-    _applePos.Y = rand() % (ROW_SIZE - 1) + 1;
+    _applePos.X = random(1, ROW_SIZE - 1);
+    _applePos.Y = random(1, ROW_SIZE - 1);
   } while(!applePosIsValid());
 }
 

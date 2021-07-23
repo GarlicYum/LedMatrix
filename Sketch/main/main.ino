@@ -3,10 +3,14 @@
 #include "SnakeGame.h"
 #include "Helpers.h"
 #include "Constants.h"
+#include <IRremote.h>
 
 #define NUM_LEDS 576
 #define DATA_PIN 5
+#define IR_REC_PIN 6
 #define LED_TYPE    WS2812
+#define MAX_BRIGHTNESS 64
+#define MIN_BRIGHTNESS 4
 
 CRGB leds[NUM_LEDS];
 
@@ -182,15 +186,20 @@ int brightness = 16;
 int lastInput = -1;
 
 void megaManRunningAnimation();
+void megaManHeadAnimation();
 void updateFrame(int tickCount, int frameCount);
 void handleIRInput();
 void updateBrightness();
 void reset();
 
+IRrecv irRecv(IR_REC_PIN);
+decode_results results;
+
 void setup() 
 {
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(brightness);
+  irRecv.enableIRIn();
 }
 
 void loop() 
@@ -202,7 +211,11 @@ void loop()
   switch(activeState)
   {
     case State_Anim0:
+      megaManRunningAnimation();
+      break;
     case State_Anim1:
+      megamanHeadAnimation();
+      break;
     case State_Anim2:
     case State_Anim3:
     case State_Anim4:
@@ -215,7 +228,6 @@ void loop()
       snakeGame.updateSnake(lastInput);
       snakeGame.draw(leds);
     case State_Generated:
-      megaManRunningAnimation();
       break;
   }
   
@@ -255,87 +267,91 @@ void updateFrame(int tickCount, int frameCount)
 
 void handleIRInput()
 {
-  // todo replace with ir input
-  int tempInput = 0;
-
-  switch(tempInput)
+  if(irRecv.decode(&results))
   {
-    case INPUT_0:
-      activeState = State_Anim0;
-      reset();
-    break;
-    case INPUT_1:
-      activeState = State_Anim1;
-      reset();
-    break;
-    case INPUT_2:
-      activeState = State_Anim2;
-      reset();
-    break;
-    case INPUT_3:
-      activeState = State_Anim3;
-      reset();
-    break;
-    case INPUT_4:
-      activeState = State_Anim4;
-      reset();
-    break;
-    case INPUT_5:
-      activeState = State_Anim5;
-      reset();
-    break;
-    case INPUT_6:
-      activeState = State_Anim6;
-      reset();
-    break;
-    case INPUT_7:
-      activeState = State_Anim7;
-      reset();
-    break;
-    case INPUT_8:
-      activeState = State_Anim8;
-      reset();
-    break;
-    case INPUT_9:
-      activeState = State_Anim9;
-      reset();
-    break;
-    case INPUT_GENERATED:
-      activeState = State_Generated;
-      reset();
-    break;
-    case INPUT_BRIGHTNESS:
-      updateBrightness();
-    break;
-    case INPUT_OK:
-      activeState = State_Snake;
-    break;
-    case INPUT_RIGHT:
-      if(activeState <= State_Generated)
+    if(results.value != 0xFFFFFFFF)
+    {
+      switch(results.value)
       {
-        activeState = (eState)((activeState + 1) % 11);
-        reset();
-      }
-    break;
-    case INPUT_LEFT:
-      if(activeState <= State_Generated)
-      {
-        if(activeState == State_Anim0)
-        {
+        case INPUT_0:
+          activeState = State_Anim0;
+          reset();
+          break;
+        case INPUT_1:
+          activeState = State_Anim1;
+          reset();
+          break;
+        case INPUT_2:
+          activeState = State_Anim2;
+          reset();
+          break;
+        case INPUT_3:
+          activeState = State_Anim3;
+          reset();
+          break;
+        case INPUT_4:
+          activeState = State_Anim4;
+          reset();
+          break;
+        case INPUT_5:
+          activeState = State_Anim5;
+          reset();
+          break;
+        case INPUT_6:
+          activeState = State_Anim6;
+          reset();
+          break;
+        case INPUT_7:
+          activeState = State_Anim7;
+          reset();
+          break;
+        case INPUT_8:
+          activeState = State_Anim8;
+          reset();
+          break;
+        case INPUT_9:
+          activeState = State_Anim9;
+          reset();
+          break;
+        case INPUT_GENERATED:
           activeState = State_Generated;
-        }
-        else
-        {
-          activeState = (eState)(activeState - 1);
-        }
+          reset();
+          break;
+        case INPUT_BRIGHTNESS:
+          updateBrightness();
+          break;
+        case INPUT_OK:
+          activeState = State_Snake;
+          break;
+        case INPUT_RIGHT:
+          if(activeState <= State_Generated)
+          {
+            activeState = (eState)((activeState + 1) % 11);
+            reset();
+          }
+          break;
+        case INPUT_LEFT:
+          if(activeState <= State_Generated)
+          {
+            if(activeState == State_Anim0)
+            {
+              activeState = State_Generated;
+            }
+            else
+            {
+              activeState = (eState)(activeState - 1);
+            }
 
-        reset();
+            reset();
+          }
+          break;
       }
-    break;
-  }
-  
 
-  lastInput = tempInput;
+      lastInput = results.value;
+    }
+    
+    irRecv.resume();
+  }
 }
 
 void reset()
@@ -347,6 +363,6 @@ void reset()
 void updateBrightness()
 {
   brightness *= 2;
-  brightness = brightness > 64 ? 4 : brightness;
+  brightness = brightness > MAX_BRIGHTNESS ? MIN_BRIGHTNESS : brightness;
   FastLED.setBrightness(brightness);
 }

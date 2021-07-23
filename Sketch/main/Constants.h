@@ -4,20 +4,20 @@
 #define UNITS_PER_ROW 3
 
 // TODO Replace with real value
-#define INPUT_OK 0
-#define INPUT_LEFT 1
-#define INPUT_RIGHT 2
-#define INPUT_UP 3
-#define INPUT_DOWN 4
-#define INPUT_BRIGHTNESS 5
-#define INPUT_GENERATED 6
-#define INPUT_0 7
-#define INPUT_1 8
-#define INPUT_2 9
-#define INPUT_3 10
-#define INPUT_4 11
-#define INPUT_5 12
-#define INPUT_6 13
-#define INPUT_7 14
-#define INPUT_8 15
-#define INPUT_9 16
+#define INPUT_OK 0xFF38C7
+#define INPUT_LEFT 0xFF10EF
+#define INPUT_RIGHT 0xFF5AA5
+#define INPUT_UP 0xFF18E7
+#define INPUT_DOWN 0xFF4AB5
+#define INPUT_BRIGHTNESS 0xFF6897
+#define INPUT_GENERATED 0xFFB04F
+#define INPUT_0 0xFF9867
+#define INPUT_1 0xFFA25D
+#define INPUT_2 0xFF629D
+#define INPUT_3 0xFFE21D
+#define INPUT_4 0xFF22DD
+#define INPUT_5 0xFF02FD
+#define INPUT_6 0xFFC23D
+#define INPUT_7 0xFFE01F
+#define INPUT_8 0xFFA857
+#define INPUT_9 0xFF906F

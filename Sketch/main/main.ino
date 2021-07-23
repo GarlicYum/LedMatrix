@@ -160,9 +160,8 @@ enum eState
   State_Anim7,
   State_Anim8,
   State_Anim9,
-  State_Cycle,
+  State_Generated,
   State_Snake,
-  State_Generated
 };
 
 // Megaman Running
@@ -174,12 +173,13 @@ const int MegaManRunningTickCount = 2;
 const int MegaManHeadFrameCount = 2;
 const int MegaManHeadTickCount = 1;
 
-SnakeGame snakeGame();
+SnakeGame snakeGame;
 
 unsigned int currentTickCount = 0;
 int currentFrameCount = 0;
 eState activeState = State_Anim0;
 int brightness = 16;
+int lastInput = -1;
 
 void megaManRunningAnimation();
 void updateFrame(int tickCount, int frameCount);
@@ -211,8 +211,9 @@ void loop()
     case State_Anim7:
     case State_Anim8:
     case State_Anim9:
-    case State_Cycle:
     case State_Snake:
+      snakeGame.updateSnake(lastInput);
+      snakeGame.draw(leds);
     case State_Generated:
       megaManRunningAnimation();
       break;
@@ -254,6 +255,87 @@ void updateFrame(int tickCount, int frameCount)
 
 void handleIRInput()
 {
+  // todo replace with ir input
+  int tempInput = 0;
+
+  switch(tempInput)
+  {
+    case INPUT_0:
+      activeState = State_Anim0;
+      reset();
+    break;
+    case INPUT_1:
+      activeState = State_Anim1;
+      reset();
+    break;
+    case INPUT_2:
+      activeState = State_Anim2;
+      reset();
+    break;
+    case INPUT_3:
+      activeState = State_Anim3;
+      reset();
+    break;
+    case INPUT_4:
+      activeState = State_Anim4;
+      reset();
+    break;
+    case INPUT_5:
+      activeState = State_Anim5;
+      reset();
+    break;
+    case INPUT_6:
+      activeState = State_Anim6;
+      reset();
+    break;
+    case INPUT_7:
+      activeState = State_Anim7;
+      reset();
+    break;
+    case INPUT_8:
+      activeState = State_Anim8;
+      reset();
+    break;
+    case INPUT_9:
+      activeState = State_Anim9;
+      reset();
+    break;
+    case INPUT_GENERATED:
+      activeState = State_Generated;
+      reset();
+    break;
+    case INPUT_BRIGHTNESS:
+      updateBrightness();
+    break;
+    case INPUT_OK:
+      activeState = State_Snake;
+    break;
+    case INPUT_RIGHT:
+      if(activeState <= State_Generated)
+      {
+        activeState = (eState)((activeState + 1) % 11);
+        reset();
+      }
+    break;
+    case INPUT_LEFT:
+      if(activeState <= State_Generated)
+      {
+        if(activeState == State_Anim0)
+        {
+          activeState = State_Generated;
+        }
+        else
+        {
+          activeState = (eState)(activeState - 1);
+        }
+
+        reset();
+      }
+    break;
+  }
+  
+
+  lastInput = tempInput;
 }
 
 void reset()

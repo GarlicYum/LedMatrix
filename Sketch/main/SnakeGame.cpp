@@ -12,7 +12,7 @@ SnakeGame::SnakeGame()
   reset();
 }
 
-void SnakeGame::update(int input)
+void SnakeGame::updateSnake(int input)
 {
   handleInput(input);
   

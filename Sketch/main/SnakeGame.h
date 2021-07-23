@@ -6,7 +6,7 @@ class SnakeGame
 {
   public:
     SnakeGame();
-    void update(int input);
+    void updateSnake(int input);
     void draw(CRGB* leds);
 
   private:

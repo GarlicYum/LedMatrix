@@ -9,8 +9,8 @@
 #define INPUT_RIGHT 2
 #define INPUT_UP 3
 #define INPUT_DOWN 4
-#define INPUT_BRIGHTNESSS 5
-#define INPUT_CYCLE 6
+#define INPUT_BRIGHTNESS 5
+#define INPUT_GENERATED 6
 #define INPUT_0 7
 #define INPUT_1 8
 #define INPUT_2 9

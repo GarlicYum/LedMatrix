@@ -1,13 +1,12 @@
 #include <avr/pgmspace.h>
 #include "FastLED.h"
+#include "SnakeGame.h"
+#include "Helpers.h"
+#include "Constants.h"
 
 #define NUM_LEDS 576
 #define DATA_PIN 5
 #define LED_TYPE    WS2812
-#define LEDS_PER_UNIT 64
-#define UNIT_DIM 8
-#define ROW_SIZE 24
-#define UNITS_PER_ROW 3
 
 CRGB leds[NUM_LEDS];
 
@@ -175,6 +174,8 @@ const int MegaManRunningTickCount = 2;
 const int MegaManHeadFrameCount = 2;
 const int MegaManHeadTickCount = 1;
 
+SnakeGame snakeGame();
+
 unsigned int currentTickCount = 0;
 int currentFrameCount = 0;
 eState activeState = State_Anim0;
@@ -183,7 +184,6 @@ int brightness = 16;
 void MegaManRunningAnimation();
 void UpdateFrame(int tickCount, int frameCount);
 void HandleIRInput();
-int convertIndex(int i);
 void updateBrightness();
 
 void setup() 
@@ -225,7 +225,7 @@ void MegaManRunningAnimation()
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = pgm_read_dword(&(MegaManRunningFrames[MegaManRunningFrameIndices[currentFrameCount]][convertIndex(i)]));
+    leds[i] = pgm_read_dword(&(MegaManRunningFrames[MegaManRunningFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
   }
 
   UpdateFrame(MegaManRunningTickCount, MegaManRunningFrameCount);
@@ -235,7 +235,7 @@ void MegaManHeadAnimation()
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = pgm_read_dword(&(MegaManHeadFrames[MegaManHeadFrameCount][convertIndex(i)]));
+    leds[i] = pgm_read_dword(&(MegaManHeadFrames[MegaManHeadFrameCount][Helpers::convertIndex(i)]));
   }
 
   UpdateFrame(MegaManHeadTickCount, MegaManHeadFrameCount);
@@ -259,11 +259,6 @@ void Reset()
 {
   currentFrameCount = 0;
   currentTickCount = 0;
-}
-
-int convertIndex(int i)
-{
-  return i % UNIT_DIM + ( i / UNIT_DIM ) * LEDS_PER_UNIT - ( i / ROW_SIZE ) * (UNITS_PER_ROW * LEDS_PER_UNIT) + UNIT_DIM * (i / ROW_SIZE);
 }
 
 void updateBrightness()

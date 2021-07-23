@@ -1,20 +1,51 @@
 #include "FastLED.h"
+#define MAX_LENGTH 200
+#define N_BODY_COLORS 4
 
 class SnakeGame
 {
   public:
+    SnakeGame();
     void update(int input);
     void draw(CRGB* leds);
 
   private:
-    struct Position
+    struct Vec2
     {
-      int x;
-      int y;
-    };
-  
-    CRGB _bodyColors[3];
-    CRGB _headColor;
+      Vec2()
+      : X(0)
+      , Y(0)
+      {}
 
-    Position _snake[200];
+      Vec2(int x, int y)
+      : X(x)
+      , Y(y)
+      {}
+      
+      int X;
+      int Y;
+    };
+
+    void reset();
+    void spawnApple();
+    void handleInput(int input);
+    void moveSnake();
+    void drawBorder(CRGB* leds);
+    void drawSnake(CRGB* leds);
+    void handleApple();
+    void checkForDeaths();
+    bool applePosIsValid() const;
+  
+    CRGB _bodyColors[N_BODY_COLORS];
+
+    bool _started = false;
+    bool _alive = true;
+    bool _hasEaten = false;
+    int _ticksBeforeUpdate = 2;
+    int _currentTick = 0;
+    int _length = 1;
+    
+    Vec2 _applePos;
+    Vec2 _direction;
+    Vec2 _snake[MAX_LENGTH];
 };

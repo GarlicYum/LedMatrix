@@ -181,10 +181,11 @@ int currentFrameCount = 0;
 eState activeState = State_Anim0;
 int brightness = 16;
 
-void MegaManRunningAnimation();
-void UpdateFrame(int tickCount, int frameCount);
-void HandleIRInput();
+void megaManRunningAnimation();
+void updateFrame(int tickCount, int frameCount);
+void handleIRInput();
 void updateBrightness();
+void reset();
 
 void setup() 
 {
@@ -194,7 +195,7 @@ void setup()
 
 void loop() 
 {
-  HandleIRInput();
+  handleIRInput();
 
   FastLED.clear();
 
@@ -213,7 +214,7 @@ void loop()
     case State_Cycle:
     case State_Snake:
     case State_Generated:
-      MegaManRunningAnimation();
+      megaManRunningAnimation();
       break;
   }
   
@@ -221,27 +222,27 @@ void loop()
   FastLED.delay(100);
 }
 
-void MegaManRunningAnimation()
+void megaManRunningAnimation()
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
     leds[i] = pgm_read_dword(&(MegaManRunningFrames[MegaManRunningFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
   }
 
-  UpdateFrame(MegaManRunningTickCount, MegaManRunningFrameCount);
+  updateFrame(MegaManRunningTickCount, MegaManRunningFrameCount);
 }
 
-void MegaManHeadAnimation()
+void megaManHeadAnimation()
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
     leds[i] = pgm_read_dword(&(MegaManHeadFrames[MegaManHeadFrameCount][Helpers::convertIndex(i)]));
   }
 
-  UpdateFrame(MegaManHeadTickCount, MegaManHeadFrameCount);
+  updateFrame(MegaManHeadTickCount, MegaManHeadFrameCount);
 }
 
-void UpdateFrame(int tickCount, int frameCount)
+void updateFrame(int tickCount, int frameCount)
 {
   FastLED.show();
 
@@ -251,11 +252,11 @@ void UpdateFrame(int tickCount, int frameCount)
   }
 }
 
-void HandleIRInput()
+void handleIRInput()
 {
 }
 
-void Reset()
+void reset()
 {
   currentFrameCount = 0;
   currentTickCount = 0;

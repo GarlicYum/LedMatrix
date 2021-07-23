@@ -3,7 +3,6 @@
 #define ROW_SIZE 24
 #define UNITS_PER_ROW 3
 
-// TODO Replace with real value
 #define INPUT_OK 0xFF38C7
 #define INPUT_LEFT 0xFF10EF
 #define INPUT_RIGHT 0xFF5AA5

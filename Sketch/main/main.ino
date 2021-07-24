@@ -11,6 +11,8 @@
 #define LED_TYPE    WS2812
 #define MAX_BRIGHTNESS 64
 #define MIN_BRIGHTNESS 4
+#define CYCLE_TICKS 100
+#define DELAY_TIME 100
 
 CRGB leds[NUM_LEDS];
 
@@ -461,6 +463,8 @@ int currentFrameCount = 0;
 eState activeState = State_Anim0;
 int brightness = 16;
 int lastInput = -1;
+bool cycling = false;
+int cycleCounter = 0;
 
 // Function declarations
 void megaManRunningAnimation();
@@ -472,6 +476,7 @@ void updateFrame(int tickCount, int frameCount);
 void handleIRInput();
 void updateBrightness();
 void reset();
+void updateCycling();
 
 IRrecv irRecv(IR_REC_PIN);
 decode_results results;
@@ -515,9 +520,10 @@ void loop()
     case State_Generated:
       break;
   }
-  
+
+  updateCycling();
   currentTickCount++;
-  FastLED.delay(100);
+  FastLED.delay(DELAY_TIME);
 }
 
 void megaManRunningAnimation()
@@ -572,6 +578,8 @@ void updateFrame(int tickCount, int frameCount)
 
 void handleIRInput()
 {
+  eState curState = activeState;
+  
   if(irRecv.decode(&results))
   {
     if(results.value != 0xFFFFFFFF)
@@ -580,47 +588,36 @@ void handleIRInput()
       {
         case INPUT_0:
           activeState = State_Anim0;
-          reset();
           break;
         case INPUT_1:
           activeState = State_Anim1;
-          reset();
           break;
         case INPUT_2:
           activeState = State_Anim2;
-          reset();
           break;
         case INPUT_3:
           activeState = State_Anim3;
-          reset();
           break;
         case INPUT_4:
           activeState = State_Anim4;
-          reset();
           break;
         case INPUT_5:
           activeState = State_Anim5;
-          reset();
           break;
         case INPUT_6:
           activeState = State_Anim6;
-          reset();
           break;
         case INPUT_7:
           activeState = State_Anim7;
-          reset();
           break;
         case INPUT_8:
           activeState = State_Anim8;
-          reset();
           break;
         case INPUT_9:
           activeState = State_Anim9;
-          reset();
           break;
         case INPUT_GENERATED:
           activeState = State_Generated;
-          reset();
           break;
         case INPUT_BRIGHTNESS:
           updateBrightness();
@@ -632,7 +629,6 @@ void handleIRInput()
           if(activeState <= State_Generated)
           {
             activeState = (eState)((activeState + 1) % 11);
-            reset();
           }
           break;
         case INPUT_LEFT:
@@ -646,16 +642,39 @@ void handleIRInput()
             {
               activeState = (eState)(activeState - 1);
             }
-
-            reset();
           }
           break;
+          case INPUT_UP:
+            if(activeState <= State_Generated && !cycling)
+            {
+              cycling = true;
+              cycleCounter = 0;
+            }
+            break;
+           case INPUT_DOWN:
+            cycling = false;
+            break;
       }
 
       lastInput = results.value;
     }
     
     irRecv.resume();
+
+    if(curState != activeState)
+    {
+      cycling = false;
+      reset();
+    }
+  }
+}
+
+void updateCycling()
+{
+  if(cycling && ++cycleCounter >= CYCLE_TICKS)
+  {
+    cycleCounter = 0;
+    activeState = (eState)((activeState + 1) % 11);
   }
 }
 

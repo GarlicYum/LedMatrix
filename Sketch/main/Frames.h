@@ -1,8 +1,6 @@
 #ifndef FRAMES_H
 #define FRAMES_H
 
-#include "Constants.h"
-
 const long MegaManRunningFrames[][NUM_LEDS] PROGMEM =
 {
 {

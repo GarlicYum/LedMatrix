@@ -6,6 +6,7 @@
 #include <IRremote.h>
 #include "Frames.h"
 
+#define NUM_LEDS 576
 #define DATA_PIN 5
 #define IR_REC_PIN 6
 #define LED_TYPE    WS2812

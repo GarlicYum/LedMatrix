@@ -2,6 +2,7 @@
 #define UNIT_DIM 8
 #define ROW_SIZE 24
 #define UNITS_PER_ROW 3
+#define NUM_LEDS 576
 
 #define INPUT_OK 0xFF38C7
 #define INPUT_LEFT 0xFF10EF

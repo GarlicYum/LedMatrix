@@ -12,7 +12,7 @@
 #define LED_TYPE    WS2812
 #define MAX_BRIGHTNESS 64
 #define MIN_BRIGHTNESS 4
-#define CYCLE_TICKS 100
+#define CYCLE_TICKS 120
 #define DELAY_TIME 100
 
 CRGB leds[NUM_LEDS];

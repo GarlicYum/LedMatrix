@@ -51,6 +51,15 @@ const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 
 const int PokemonFrameCount = 6;
 const int PokemonTickCount = 5;
 
+// Mario walking
+const int MarioWalkingFrameIndices[] = {0, 1, 0, 2};
+const int MarioWalkingFrameCount = 4;
+const int MarioWalkingTickCount = 1;
+
+// Link Walking
+const int LinkWalkingFrameCount = 10;
+const int LinkWalkingTickCount = 1;
+
 // Others
 SnakeGame snakeGame;
 unsigned int currentTickCount = 0;
@@ -66,6 +75,8 @@ void megaManRunningAnimation();
 void megaManHeadAnimation();
 void tmntAnimation();
 void pokemonAnimation();
+void linkWalkingAnimation();
+void marioWalkingAnimation();
 
 void updateFrame(int tickCount, int frameCount);
 void handleIRInput();
@@ -105,7 +116,10 @@ void loop()
       pokemonAnimation();
       break;
     case State_Anim5:
+      marioWalkingAnimation();
+      break;
     case State_Anim6:
+      linkWalkingAnimation();
     case State_Anim7:
     case State_Anim8:
     case State_Anim9:
@@ -159,6 +173,26 @@ void pokemonAnimation()
   }
 
   updateFrame(PokemonTickCount, PokemonFrameCount);
+}
+
+void linkWalkingAnimation()
+{
+  for(int i = 0; i < NUM_LEDS; i++)
+  {
+    leds[i] = pgm_read_dword(&(LinkWalkingFrames[currentFrameCount][Helpers::convertIndex(i)]));
+  }
+
+  updateFrame(LinkWalkingTickCount, LinkWalkingFrameCount);
+}
+
+void marioWalkingAnimation()
+{
+  for(int i = 0; i < NUM_LEDS; i++)
+  {
+    leds[i] = pgm_read_dword(&(MarioWalkingFrames[MarioWalkingFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
+  }
+
+  updateFrame(MarioWalkingTickCount, MarioWalkingFrameCount);
 }
 
 void updateFrame(int tickCount, int frameCount)

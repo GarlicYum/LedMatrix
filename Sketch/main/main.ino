@@ -71,12 +71,8 @@ bool cycling = false;
 int cycleCounter = 0;
 
 // Function declarations
-void megaManRunningAnimation();
-void megaManHeadAnimation();
-void tmntAnimation();
-void pokemonAnimation();
-void linkWalkingAnimation();
-void marioWalkingAnimation();
+void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount, const int* frameIndices);
+void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount);
 
 void updateFrame(int tickCount, int frameCount);
 void handleIRInput();
@@ -103,23 +99,25 @@ void loop()
   switch(activeState)
   {
     case State_Anim0:
-      megaManRunningAnimation();
+      updateAnimation(MegaManRunningFrames, MegaManRunningTickCount, MegaManRunningFrameCount, MegaManRunningFrameIndices);
       break;
     case State_Anim1:
-      megaManHeadAnimation();
+      updateAnimation(MegaManHeadFrames, MegaManHeadTickCount, MegaManHeadFrameCount);
       break;
     case State_Anim2:
+      // heart container
     case State_Anim3:
-      tmntAnimation();
+      updateAnimation(TMNTFrames, TMNTTickCount, TMNTFrameCount);
       break;
     case State_Anim4:
-      pokemonAnimation();
+      updateAnimation(PokemonFrames, PokemonTickCount, PokemonFrameCount, PokemonFrameIndices);
       break;
     case State_Anim5:
-      marioWalkingAnimation();
+      updateAnimation(MarioWalkingFrames, MarioWalkingTickCount, MarioWalkingFrameCount, MarioWalkingFrameIndices);
       break;
     case State_Anim6:
-      linkWalkingAnimation();
+      updateAnimation(LinkWalkingFrames, LinkWalkingTickCount, LinkWalkingFrameCount);
+      break;
     case State_Anim7:
     case State_Anim8:
     case State_Anim9:
@@ -135,64 +133,24 @@ void loop()
   FastLED.delay(DELAY_TIME);
 }
 
-void megaManRunningAnimation()
+void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount, const int* frameIndices)
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = pgm_read_dword(&(MegaManRunningFrames[MegaManRunningFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
+    leds[i] = pgm_read_dword(&(frames[frameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
   }
 
-  updateFrame(MegaManRunningTickCount, MegaManRunningFrameCount);
+  updateFrame(tickCount, frameCount);
 }
 
-void megaManHeadAnimation()
+void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount)
 {
   for(int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = pgm_read_dword(&(MegaManHeadFrames[currentFrameCount][Helpers::convertIndex(i)]));
+    leds[i] = pgm_read_dword(&(frames[currentFrameCount][Helpers::convertIndex(i)]));
   }
 
-  updateFrame(MegaManHeadTickCount, MegaManHeadFrameCount);
-}
-
-void tmntAnimation()
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(TMNTFrames[currentFrameCount][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(TMNTTickCount, TMNTFrameCount);
-}
-
-void pokemonAnimation()
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(PokemonFrames[PokemonFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(PokemonTickCount, PokemonFrameCount);
-}
-
-void linkWalkingAnimation()
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(LinkWalkingFrames[currentFrameCount][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(LinkWalkingTickCount, LinkWalkingFrameCount);
-}
-
-void marioWalkingAnimation()
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(MarioWalkingFrames[MarioWalkingFrameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(MarioWalkingTickCount, MarioWalkingFrameCount);
+  updateFrame(tickCount, frameCount);
 }
 
 void updateFrame(int tickCount, int frameCount)

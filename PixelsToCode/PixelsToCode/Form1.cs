@@ -10,7 +10,7 @@ namespace PixelsToCode
     {
         List<Button> cells = new List<Button>();
         int gridDim = 24;
-
+        GenerateForm generateForm = new GenerateForm();
         public Form1()
         {
             InitializeComponent();
@@ -117,6 +117,62 @@ namespace PixelsToCode
                 Color c = ColorTranslator.FromHtml( rgbText[i].Replace( "0x", "#" ) );
                 cells[i].BackColor = c;
             }
+        }
+
+        private void btnGenerate_Click( object sender, EventArgs e )
+        {
+            if( generateForm.ShowDialog() == DialogResult.OK )
+            { 
+                for(int i = 0; i < generateForm.Colors.Length; i++ )
+                {
+                    cells[i].BackColor = generateForm.Colors[i];
+                }
+            }
+        }
+
+        private void btnUp_Click( object sender, EventArgs e )
+        {
+            for( int i = 24; i < cells.Count; i++ )
+            {
+                cells[i - 24].BackColor = cells[i].BackColor;
+            }
+            for(int i = cells.Count - 24; i < cells.Count; i++ )
+            {
+                cells[i].BackColor = Color.Black;
+            }
+        }
+
+        private void btnLeft_Click( object sender, EventArgs e )
+        {
+            for(int i = 0; i < cells.Count - 1; i++ )
+            {
+                cells[i].BackColor = cells[i + 1].BackColor;
+            }
+
+            cells[cells.Count - 1].BackColor = Color.Black;
+        }
+
+        private void btnDown_Click( object sender, EventArgs e )
+        {
+            for( int i = cells.Count - 1; i > 23; i-- )
+            {
+                cells[i].BackColor = cells[i - 24].BackColor;
+            }
+
+            for( int i = 0; i < 24; i++ )
+            {
+                cells[i].BackColor = Color.Black;
+            }
+        }
+
+        private void btnRight_Click( object sender, EventArgs e )
+        {
+            for( int i = cells.Count - 1; i > 0; i-- )
+            {
+                cells[i].BackColor = cells[i - 1].BackColor;
+            }
+
+            cells[0].BackColor = Color.Black;
         }
     }
 }

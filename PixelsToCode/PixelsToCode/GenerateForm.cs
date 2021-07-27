@@ -249,7 +249,7 @@ namespace PixelsToCode
                 return -1;
             }
 
-            return ( maxY - minY ) / (int)numPixels.Value;
+            return ( maxY - minY ) / (int)numPixels.Value + 1;
         }
     }
 }

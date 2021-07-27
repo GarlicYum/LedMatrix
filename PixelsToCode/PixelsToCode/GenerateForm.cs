@@ -88,22 +88,22 @@ namespace PixelsToCode
         {
             if(image != null)
             {
-                int pixelSize = GetPixelSize();
+                double pixelSize = GetPixelSize();
                 int minY = GetMinY();
                 int minX = GetMinX();
 
                 if(pixelSize != -1)
                 {
-                    int yStart = minY + (pixelSize / 2);
-                    int xStart = minX + (pixelSize / 2);
+                    double yStart = minY + (pixelSize / 2);
+                    double xStart = minX + (pixelSize / 2);
                     Bitmap img = new Bitmap(image);
 
                     for( int y = 0; y < 24; y++ )
                     {
-                        int sampleY = yStart + y * pixelSize;
+                        int sampleY = (int)(yStart + y * pixelSize);
                         for(int x = 0; x < 24; x++ )
                         {
-                            int sampleX = xStart + x * pixelSize;
+                            int sampleX = (int)(xStart + x * pixelSize);
 
                             if(sampleX >= image.Width || sampleY >= image.Height ||
                                 x < MinXIndex(pixelSize, xStart, yStart, y, img) ||
@@ -121,12 +121,12 @@ namespace PixelsToCode
             }
         }
 
-        private int MinXIndex(int pixelSize, int xStart, int yStart, int y, Bitmap img)
+        private int MinXIndex(double pixelSize, double xStart, double yStart, int y, Bitmap img)
         {
             for(int x = 0; x < 24; x++ )
             {
-                int sampleX = xStart + x * pixelSize;
-                int sampleY = yStart + y * pixelSize;
+                int sampleX = (int)(xStart + x * pixelSize);
+                int sampleY = (int)(yStart + y * pixelSize);
 
                 if(sampleX < img.Width && sampleY < img.Height)
                 {
@@ -141,12 +141,12 @@ namespace PixelsToCode
             return -1;
         }
 
-        private int MaxXIndex( int pixelSize, int xStart, int yStart, int y, Bitmap img )
+        private int MaxXIndex( double pixelSize, double xStart, double yStart, int y, Bitmap img )
         {
             for( int x = 23; x >= 0; x-- )
             {
-                int sampleX = xStart + x * pixelSize;
-                int sampleY = yStart + y * pixelSize;
+                int sampleX = (int)(xStart + x * pixelSize);
+                int sampleY = (int)(yStart + y * pixelSize);
 
                 if( sampleX < img.Width && sampleY < img.Height )
                 {
@@ -237,7 +237,7 @@ namespace PixelsToCode
             return -1;
         }
 
-        private int GetPixelSize()
+        private double GetPixelSize()
         {
             Bitmap img = new Bitmap(image);
 
@@ -249,7 +249,7 @@ namespace PixelsToCode
                 return -1;
             }
 
-            return ( maxY - minY ) / (int)numPixels.Value + 1;
+            return ( maxY - minY ) / (double)numPixels.Value;
         }
     }
 }

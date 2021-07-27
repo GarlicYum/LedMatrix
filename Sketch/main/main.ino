@@ -55,6 +55,11 @@ const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 
 const int PokemonFrameCount = 6;
 const int PokemonTickCount = 5;
 
+// PokeBall
+const int PokeBallFrameIndices[] = {0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 6, 7, 8, 9};
+const int PokeBallFrameCount = 16;
+const int PokeBallTickCount = 1;
+
 // Mario walking
 const int MarioWalkingFrameIndices[] = {0, 1, 0, 2};
 const int MarioWalkingFrameCount = 4;
@@ -123,7 +128,7 @@ void loop()
       updateAnimation(PokemonFrames, PokemonTickCount, PokemonFrameCount, PokemonFrameIndices);
       break;
     case State_Anim5:
-      updateAnimation(MarioWalkingFrames, MarioWalkingTickCount, MarioWalkingFrameCount, MarioWalkingFrameIndices);
+      updateAnimation(PokeBallFrames, PokeBallTickCount, PokeBallFrameCount, PokeBallFrameIndices);
       break;
     case State_Anim6:
       updateAnimation(LinkWalkingFrames, LinkWalkingTickCount, LinkWalkingFrameCount);
@@ -132,6 +137,8 @@ void loop()
       updateAnimation(KirbyFrames, KirbyTickCount, KirbyFrameCount, KirbyFrameIndices);
       break;
     case State_Anim8:
+      updateAnimation(MarioWalkingFrames, MarioWalkingTickCount, MarioWalkingFrameCount, MarioWalkingFrameIndices);
+      break;
     case State_Anim9:
     case State_Snake:
       snakeGame.updateSnake(lastInput);

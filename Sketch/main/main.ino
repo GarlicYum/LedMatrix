@@ -60,6 +60,11 @@ const int MarioWalkingFrameIndices[] = {0, 1, 0, 2};
 const int MarioWalkingFrameCount = 4;
 const int MarioWalkingTickCount = 1;
 
+// Kirby
+const int KirbyFrameIndices[] = {0, 1, 2, 1};
+const int KirbyFrameCount = 4;
+const int KirbyTickCount = 2;
+
 // Link Walking
 const int LinkWalkingFrameCount = 10;
 const int LinkWalkingTickCount = 1;
@@ -124,6 +129,8 @@ void loop()
       updateAnimation(LinkWalkingFrames, LinkWalkingTickCount, LinkWalkingFrameCount);
       break;
     case State_Anim7:
+      updateAnimation(KirbyFrames, KirbyTickCount, KirbyFrameCount, KirbyFrameIndices);
+      break;
     case State_Anim8:
     case State_Anim9:
     case State_Snake:

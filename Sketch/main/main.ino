@@ -29,7 +29,7 @@ enum eState
   State_Anim7,
   State_Anim8,
   State_Anim9,
-  State_Generated,
+  State_Anim10,
   State_Snake,
 };
 
@@ -73,6 +73,11 @@ const int KirbyTickCount = 2;
 // Link Walking
 const int LinkWalkingFrameCount = 10;
 const int LinkWalkingTickCount = 1;
+
+// Nemo
+const int NemoFrameIndices[] = {0, 1, 2, 1};
+const int NemoFrameCount = 4;
+const int NemoTickCount = 2;
 
 // Others
 SnakeGame snakeGame;
@@ -140,11 +145,13 @@ void loop()
       updateAnimation(MarioWalkingFrames, MarioWalkingTickCount, MarioWalkingFrameCount, MarioWalkingFrameIndices);
       break;
     case State_Anim9:
+      updateAnimation(NemoFrames, NemoTickCount, NemoFrameCount, NemoFrameIndices);
+      break;
+    case State_Anim10:
+      break;
     case State_Snake:
       snakeGame.updateSnake(lastInput);
       snakeGame.draw(leds);
-    case State_Generated:
-      break;
   }
 
   updateCycling();
@@ -222,8 +229,8 @@ void handleIRInput()
         case INPUT_9:
           activeState = State_Anim9;
           break;
-        case INPUT_GENERATED:
-          activeState = State_Generated;
+        case INPUT_10:
+          activeState = State_Anim10;
           break;
         case INPUT_BRIGHTNESS:
           updateBrightness();
@@ -232,17 +239,17 @@ void handleIRInput()
           activeState = State_Snake;
           break;
         case INPUT_RIGHT:
-          if(activeState <= State_Generated)
+          if(activeState <= State_Anim10)
           {
             activeState = (eState)((activeState + 1) % 11);
           }
           break;
         case INPUT_LEFT:
-          if(activeState <= State_Generated)
+          if(activeState <= State_Anim10)
           {
             if(activeState == State_Anim0)
             {
-              activeState = State_Generated;
+              activeState = State_Anim10;
             }
             else
             {
@@ -251,7 +258,7 @@ void handleIRInput()
           }
           break;
           case INPUT_UP:
-            if(activeState <= State_Generated && !cycling)
+            if(activeState <= State_Anim10 && !cycling)
             {
               cycling = true;
               cycleCounter = 0;

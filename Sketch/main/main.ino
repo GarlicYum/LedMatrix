@@ -42,6 +42,10 @@ const int MegaManRunningTickCount = 2;
 const int MegaManHeadFrameCount = 2;
 const int MegaManHeadTickCount = 1;
 
+// Heart Container
+const int HeartContainerFrameCount = 4;
+const int HeartContainerTickCount = 2;
+
 // TMNT
 const int TMNTFrameCount = 4;
 const int TMNTTickCount = 30;
@@ -105,7 +109,8 @@ void loop()
       updateAnimation(MegaManHeadFrames, MegaManHeadTickCount, MegaManHeadFrameCount);
       break;
     case State_Anim2:
-      // heart container
+      updateAnimation(HeartContainerFrames, HeartContainerTickCount, HeartContainerFrameCount);
+      break;
     case State_Anim3:
       updateAnimation(TMNTFrames, TMNTTickCount, TMNTFrameCount);
       break;

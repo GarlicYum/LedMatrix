@@ -74,6 +74,10 @@ const int KirbyTickCount = 2;
 const int LinkWalkingFrameCount = 10;
 const int LinkWalkingTickCount = 1;
 
+// Bubble
+const int BubbleFrameCount = 2;
+const int BubbleTickCount = 5;
+
 // Nemo
 const int NemoFrameIndices[] = {0, 1, 2, 1};
 const int NemoFrameCount = 4;
@@ -148,6 +152,7 @@ void loop()
       updateAnimation(NemoFrames, NemoTickCount, NemoFrameCount, NemoFrameIndices);
       break;
     case State_Anim10:
+      updateAnimation(BubbleFrames, BubbleTickCount, BubbleFrameCount);
       break;
     case State_Snake:
       snakeGame.updateSnake(lastInput);

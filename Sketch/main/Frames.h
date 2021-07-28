@@ -1719,4 +1719,10 @@ const long FireFrames[][NUM_LEDS] PROGMEM =
 }
 };
 
+const long ItemsFrames[][NUM_LEDS] PROGMEM =
+{
+{
+}
+};
+
 #endif

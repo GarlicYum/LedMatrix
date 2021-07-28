@@ -95,6 +95,8 @@ const int PiranhaFrameCount = 6;
 const int PiranhaTickCount = 1;
 
 // fire
+const int FireFrameCount = 10;
+const int FireTickCount = 1;
 
 // shell
 
@@ -174,6 +176,7 @@ void loop()
       updateAnimation(PiranhaFrames, PiranhaTickCount, PiranhaFrameCount, PiranhaFrameIndices);
       break;
     case State_Anim11:
+      updateAnimation(FireFrames, FireTickCount, FireFrameCount);
       break;
     case State_Anim12:
       break;

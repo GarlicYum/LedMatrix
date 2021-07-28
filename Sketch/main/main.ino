@@ -99,6 +99,8 @@ const int FireFrameCount = 10;
 const int FireTickCount = 1;
 
 // shell
+const int ShellFrameCount = 6;
+const int ShellTickCount = 1;
 
 // mario items
 const int ItemsFrameCount = 4;
@@ -184,6 +186,7 @@ void loop()
       updateAnimation(ItemsFrames, ItemsTickCount, ItemsFrameCount);
       break;
     case State_Anim13:
+      updateAnimation(ShellFrames, ShellTickCount, ShellFrameCount);
       break;
     case State_Anim14:
       break;

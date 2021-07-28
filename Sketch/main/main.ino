@@ -30,6 +30,12 @@ enum eState
   State_Anim8,
   State_Anim9,
   State_Anim10,
+  State_Anim11,
+  State_Anim12,
+  State_Anim13,
+  State_Anim14,
+  State_Anim15,
+  State_Anim_Special,
   State_Snake,
 };
 
@@ -48,7 +54,7 @@ const int HeartContainerTickCount = 2;
 
 // TMNT
 const int TMNTFrameCount = 4;
-const int TMNTTickCount = 30;
+const int TMNTTickCount = 10;
 
 // Pokemon
 const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5};
@@ -82,6 +88,19 @@ const int BubbleTickCount = 5;
 const int NemoFrameIndices[] = {0, 1, 2, 1};
 const int NemoFrameCount = 4;
 const int NemoTickCount = 2;
+
+// Piranha
+const int PiranhaFrameIndices[] = {0, 1, 2, 3, 2, 1};
+const int PiranhaFrameCount = 6;
+const int PiranhaTickCount = 1;
+
+// fire
+
+// shell
+
+// mario items
+
+// wily
 
 // Others
 SnakeGame snakeGame;
@@ -152,6 +171,19 @@ void loop()
       updateAnimation(NemoFrames, NemoTickCount, NemoFrameCount, NemoFrameIndices);
       break;
     case State_Anim10:
+      updateAnimation(PiranhaFrames, PiranhaTickCount, PiranhaFrameCount, PiranhaFrameIndices);
+      break;
+    case State_Anim11:
+      break;
+    case State_Anim12:
+      break;
+    case State_Anim13:
+      break;
+    case State_Anim14:
+      break;
+    case State_Anim15:
+      break;
+    case State_Anim_Special:
       updateAnimation(BubbleFrames, BubbleTickCount, BubbleFrameCount);
       break;
     case State_Snake:
@@ -234,8 +266,8 @@ void handleIRInput()
         case INPUT_9:
           activeState = State_Anim9;
           break;
-        case INPUT_10:
-          activeState = State_Anim10;
+        case INPUT_SPECIAL:
+          activeState = State_Anim_Special;
           break;
         case INPUT_BRIGHTNESS:
           updateBrightness();
@@ -244,17 +276,17 @@ void handleIRInput()
           activeState = State_Snake;
           break;
         case INPUT_RIGHT:
-          if(activeState <= State_Anim10)
+          if(activeState <= State_Anim_Special)
           {
             activeState = (eState)((activeState + 1) % 11);
           }
           break;
         case INPUT_LEFT:
-          if(activeState <= State_Anim10)
+          if(activeState <= State_Anim_Special)
           {
             if(activeState == State_Anim0)
             {
-              activeState = State_Anim10;
+              activeState = State_Anim_Special;
             }
             else
             {
@@ -263,7 +295,7 @@ void handleIRInput()
           }
           break;
           case INPUT_UP:
-            if(activeState <= State_Anim10 && !cycling)
+            if(activeState <= State_Anim_Special && !cycling)
             {
               cycling = true;
               cycleCounter = 0;

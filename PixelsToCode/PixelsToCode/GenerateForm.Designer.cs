@@ -63,11 +63,6 @@ namespace PixelsToCode
             // numPixels
             // 
             this.numPixels.Location = new System.Drawing.Point(34, 664);
-            this.numPixels.Maximum = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
             this.numPixels.Minimum = new decimal(new int[] {
             1,
             0,

@@ -131,7 +131,7 @@ namespace PixelsToCode
                 if(sampleX < img.Width && sampleY < img.Height)
                 {
                     Color c = img.GetPixel(sampleX, sampleY);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return x;
                     }
@@ -151,7 +151,7 @@ namespace PixelsToCode
                 if( sampleX < img.Width && sampleY < img.Height )
                 {
                     Color c = img.GetPixel(sampleX, sampleY);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return x;
                     }
@@ -170,7 +170,7 @@ namespace PixelsToCode
                 for( int x = 0; x < image.Width; x++ )
                 {
                     Color c = img.GetPixel(x, y);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return y;
                     }
@@ -189,7 +189,7 @@ namespace PixelsToCode
                 for( int y = 0; y < image.Height; y++ )
                 {
                     Color c = img.GetPixel(x, y);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return x;
                     }
@@ -208,7 +208,7 @@ namespace PixelsToCode
                 for( int x = 0; x < image.Width; x++ )
                 {
                     Color c = img.GetPixel(x, y);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return y;
                     }
@@ -227,7 +227,7 @@ namespace PixelsToCode
                 for( int y = 0; y < image.Height; y++ )
                 {
                     Color c = img.GetPixel(x, y);
-                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() )
+                    if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
                     {
                         return x;
                     }

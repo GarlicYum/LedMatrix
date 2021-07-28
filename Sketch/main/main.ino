@@ -194,9 +194,9 @@ void loop()
       updateAnimation(WilyFrames, WilyTickCount, WilyFrameCount);
       break;
     case State_Anim15:
+      updateAnimation(BubbleFrames, BubbleTickCount, BubbleFrameCount);
       break;
     case State_Anim_Special:
-      updateAnimation(BubbleFrames, BubbleTickCount, BubbleFrameCount);
       break;
     case State_Snake:
       snakeGame.updateSnake(lastInput);

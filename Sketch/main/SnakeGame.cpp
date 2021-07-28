@@ -115,6 +115,19 @@ void SnakeGame::drawSnake(CRGB* leds)
   {
     leds[Helpers::convertIndex(_snake[i].Y * ROW_SIZE + _snake[i].X)] = _bodyColors[i % N_BODY_COLORS];
   }
+
+  if(!_alive)
+  {
+    for(int i = 0; i < _deathAnimCounter; i++)
+    {
+      leds[Helpers::convertIndex(_snake[i].Y * ROW_SIZE + _snake[i].X)] = CRGB::Red;
+    }
+    
+    if(_deathAnimCounter < _length)
+    {
+      ++_deathAnimCounter;
+    }
+  }
 }
 
 void SnakeGame::handleApple()
@@ -145,13 +158,13 @@ void SnakeGame::checkForDeaths()
 
 void SnakeGame::reset()
 {
-  bool _started = false;
-  bool _alive = true;
-  bool _hasEaten = false;
-  int _ticksBeforeUpdate = 2;
-  int _currentTick = 0;
-  int _length = 1;
-  Vec2 _direction = Vec2();
+  _started = false;
+  _alive = true;
+  _hasEaten = false;
+  _ticksBeforeUpdate = 2;
+  _currentTick = 0;
+  _length = _deathAnimCounter = 1;
+  _direction = Vec2();
 
   _snake[0] = Vec2(ROW_SIZE / 2, ROW_SIZE / 2);
   

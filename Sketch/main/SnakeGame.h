@@ -44,6 +44,7 @@ class SnakeGame
     int _ticksBeforeUpdate = 2;
     int _currentTick = 0;
     int _length = 1;
+    int _deathAnimCounter = 1;
     
     Vec2 _applePos;
     Vec2 _direction;

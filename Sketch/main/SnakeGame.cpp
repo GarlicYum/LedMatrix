@@ -27,6 +27,7 @@ void SnakeGame::updateSnake(int input)
 
 void SnakeGame::draw(CRGB* leds)
 {
+  leds[_applePos.Y * ROW_SIZE + _applePos.X] = CRGB::Red;
   drawBorder(leds);
   drawSnake(leds);
 }

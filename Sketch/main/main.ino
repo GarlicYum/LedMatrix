@@ -107,6 +107,8 @@ const int ItemsFrameCount = 4;
 const int ItemsTickCount = 1;
 
 // wily
+const int WilyFrameCount = 6;
+const int WilyTickCount = 1;
 
 // Others
 SnakeGame snakeGame;
@@ -189,6 +191,7 @@ void loop()
       updateAnimation(ShellFrames, ShellTickCount, ShellFrameCount);
       break;
     case State_Anim14:
+      updateAnimation(WilyFrames, WilyTickCount, WilyFrameCount);
       break;
     case State_Anim15:
       break;

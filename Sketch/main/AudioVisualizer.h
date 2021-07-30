@@ -32,6 +32,10 @@ class AudioVisualizer
     void computeFFT();
     void analyzeResults();
     void draw();
+    void resetBands();
+    void decayPeak();
+    void incrementColorTimer();
+    void cycleModes();
     
     void rainbowBars(int band, int barHeight);
     void purpleBars(int band, int barHeight);
@@ -39,7 +43,6 @@ class AudioVisualizer
     void centerBars(int band, int barHeight);
     void whitePeak(int band);
     void outrunPeak(int band);
-    void waterfall(int band);
   
     eModes _mode = Mode_Rainbow;
 

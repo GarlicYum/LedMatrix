@@ -33,54 +33,22 @@ CRGBPalette16 heatPal = redyellow_gp;
 
 AudioVisualizer::AudioVisualizer(CRGB* leds)
 : leds(leds)
-{
-  FFT = arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ);
-  sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQ));
-}
+, FFT(arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ))
+, sampling_period_us(round(1000000 * (1.0 / SAMPLING_FREQ)))
+{}
 
 void AudioVisualizer::updateVisualizer()
 {
   FastLED.clear();
-
-  // Reset bandValues[]
-  for (int i = 0; i < ROW_SIZE; i++)
-  {
-    bandValues[i] = 0;
-  }
-
+  
+  resetBands();
   getSamples();
   computeFFT();
-
   analyzeResults();
   draw();
-
-  // Decay peak
-  EVERY_N_MILLISECONDS(60) 
-  {
-    for (byte band = 0; band < ROW_SIZE; band++)
-    {
-      if (peak[band] > 0)
-      {
-        peak[band] -= 1;
-      }
-    }
-      
-    colorTimer++;
-  }
-
-  // Used in some of the patterns
-  EVERY_N_MILLISECONDS(10) 
-  {
-    colorTimer++;
-  }
-
-  EVERY_N_SECONDS(10) 
-  {
-    if (autoChangePatterns) 
-    {
-      _mode = (eModes)((_mode + 1) % Num_Modes);
-    }
-  }
+  decayPeak();
+  incrementColorTimer();
+  cycleModes();
 
   FastLED.show();
 }
@@ -248,4 +216,47 @@ void AudioVisualizer::outrunPeak(int band)
 {
   int peakHeight = TOP - peak[band] - 1;
   leds[peakHeight * ROW_SIZE + band] = ColorFromPalette(outrunPal, peakHeight * (255 / ROW_SIZE));
+}
+
+void AudioVisualizer::resetBands()
+{
+  for (int i = 0; i < ROW_SIZE; i++)
+  {
+    bandValues[i] = 0;
+  }
+}
+
+void AudioVisualizer::decayPeak()
+{
+  EVERY_N_MILLISECONDS(60) 
+  {
+    for (byte band = 0; band < ROW_SIZE; band++)
+    {
+      if (peak[band] > 0)
+      {
+        peak[band] -= 1;
+      }
+    }
+      
+    colorTimer++;
+  }
+}
+
+void AudioVisualizer::incrementColorTimer()
+{
+  EVERY_N_MILLISECONDS(10) 
+  {
+    colorTimer++;
+  }
+}
+
+void AudioVisualizer::cycleModes()
+{
+  EVERY_N_SECONDS(10) 
+  {
+    if (autoChangePatterns) 
+    {
+      _mode = (eModes)((_mode + 1) % Num_Modes);
+    }
+  }
 }

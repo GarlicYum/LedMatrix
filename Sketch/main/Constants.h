@@ -2,6 +2,7 @@
 #define UNIT_DIM 8
 #define ROW_SIZE 24
 #define UNITS_PER_ROW 3
+#define NUM_LEDS 576
 
 #define INPUT_OK 0xFF38C7
 #define INPUT_LEFT 0xFF10EF
@@ -19,4 +20,4 @@
 #define INPUT_7 0xFFE01F
 #define INPUT_8 0xFFA857
 #define INPUT_9 0xFF906F
-#define INPUT_SPECIAL 0xFFB04F
+#define INPUT_AUDIO 0xFFB04F

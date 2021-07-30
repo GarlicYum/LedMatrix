@@ -1,12 +1,11 @@
 #include <avr/pgmspace.h>
 #include "FastLED.h"
 #include "SnakeGame.h"
-#include "Helpers.h"
 #include "Constants.h"
 #include <IRremote.h>
 #include "Frames.h"
+#include "Animation.h"
 
-#define NUM_LEDS 576
 #define DATA_PIN 5
 #define IR_REC_PIN 6
 #define LED_TYPE    WS2812
@@ -14,120 +13,39 @@
 #define MIN_BRIGHTNESS 4
 #define CYCLE_TICKS 120
 #define DELAY_TIME 100
+#define NUM_ANIMS 16
 
 CRGB leds[NUM_LEDS];
 
 enum eState
 {
-  State_Anim0,
-  State_Anim1,
-  State_Anim2,
-  State_Anim3,
-  State_Anim4,
-  State_Anim5,
-  State_Anim6,
-  State_Anim7,
-  State_Anim8,
-  State_Anim9,
-  State_Anim10,
-  State_Anim11,
-  State_Anim12,
-  State_Anim13,
-  State_Anim14,
-  State_Anim15,
-  State_Anim_Special,
+  State_Anim,
+  State_AudioVisualizer,
   State_Snake,
 };
 
-// Megaman Running
+// Animation variables
+int currentAnim = 0;
+Animation animations[NUM_ANIMS];
 const int MegaManRunningFrameIndices[] = {0, 1, 2, 1};
-const int MegaManRunningFrameCount = 4;
-const int MegaManRunningTickCount = 2;
-
-// Megaman Head
-const int MegaManHeadFrameCount = 2;
-const int MegaManHeadTickCount = 1;
-
-// Heart Container
-const int HeartContainerFrameCount = 4;
-const int HeartContainerTickCount = 2;
-
-// TMNT
-const int TMNTFrameCount = 4;
-const int TMNTTickCount = 10;
-
-// Pokemon
 const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5};
-const int PokemonFrameCount = 6;
-const int PokemonTickCount = 5;
-
-// PokeBall
 const int PokeBallFrameIndices[] = {0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 6, 7, 8, 9};
-const int PokeBallFrameCount = 16;
-const int PokeBallTickCount = 1;
-
-// Mario walking
 const int MarioWalkingFrameIndices[] = {0, 1, 0, 2};
-const int MarioWalkingFrameCount = 4;
-const int MarioWalkingTickCount = 1;
-
-// Kirby
 const int KirbyFrameIndices[] = {0, 1, 2, 1};
-const int KirbyFrameCount = 4;
-const int KirbyTickCount = 2;
-
-// Link Walking
-const int LinkWalkingFrameCount = 10;
-const int LinkWalkingTickCount = 1;
-
-// Bubble
-const int BubbleFrameCount = 2;
-const int BubbleTickCount = 5;
-
-// Nemo
 const int NemoFrameIndices[] = {0, 1, 2, 1};
-const int NemoFrameCount = 4;
-const int NemoTickCount = 2;
-
-// Piranha
 const int PiranhaFrameIndices[] = {0, 1, 2, 3, 2, 1};
-const int PiranhaFrameCount = 6;
-const int PiranhaTickCount = 1;
-
-// fire
-const int FireFrameCount = 10;
-const int FireTickCount = 1;
-
-// shell
-const int ShellFrameCount = 6;
-const int ShellTickCount = 1;
-
-// mario items
-const int ItemsFrameCount = 4;
-const int ItemsTickCount = 1;
-
-// wily
-const int WilyFrameCount = 6;
-const int WilyTickCount = 1;
 
 // Others
 SnakeGame snakeGame;
-unsigned int currentTickCount = 0;
-int currentFrameCount = 0;
-eState activeState = State_Anim0;
+eState activeState = State_Anim;
 int brightness = 16;
 int lastInput = -1;
 bool cycling = false;
 int cycleCounter = 0;
 
-// Function declarations
-void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount, const int* frameIndices);
-void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount);
-
-void updateFrame(int tickCount, int frameCount);
+void setupAnimations();
 void handleIRInput();
 void updateBrightness();
-void reset();
 void updateCycling();
 
 IRrecv irRecv(IR_REC_PIN);
@@ -138,6 +56,7 @@ void setup()
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(brightness);
   irRecv.enableIRIn();
+  setupAnimations();
 }
 
 void loop() 
@@ -148,55 +67,10 @@ void loop()
 
   switch(activeState)
   {
-    case State_Anim0:
-      updateAnimation(MegaManRunningFrames, MegaManRunningTickCount, MegaManRunningFrameCount, MegaManRunningFrameIndices);
+    case State_Anim:
+      animations[currentAnim].updateAnim(leds);
       break;
-    case State_Anim1:
-      updateAnimation(MegaManHeadFrames, MegaManHeadTickCount, MegaManHeadFrameCount);
-      break;
-    case State_Anim2:
-      updateAnimation(HeartContainerFrames, HeartContainerTickCount, HeartContainerFrameCount);
-      break;
-    case State_Anim3:
-      updateAnimation(TMNTFrames, TMNTTickCount, TMNTFrameCount);
-      break;
-    case State_Anim4:
-      updateAnimation(PokemonFrames, PokemonTickCount, PokemonFrameCount, PokemonFrameIndices);
-      break;
-    case State_Anim5:
-      updateAnimation(PokeBallFrames, PokeBallTickCount, PokeBallFrameCount, PokeBallFrameIndices);
-      break;
-    case State_Anim6:
-      updateAnimation(LinkWalkingFrames, LinkWalkingTickCount, LinkWalkingFrameCount);
-      break;
-    case State_Anim7:
-      updateAnimation(KirbyFrames, KirbyTickCount, KirbyFrameCount, KirbyFrameIndices);
-      break;
-    case State_Anim8:
-      updateAnimation(MarioWalkingFrames, MarioWalkingTickCount, MarioWalkingFrameCount, MarioWalkingFrameIndices);
-      break;
-    case State_Anim9:
-      updateAnimation(NemoFrames, NemoTickCount, NemoFrameCount, NemoFrameIndices);
-      break;
-    case State_Anim10:
-      updateAnimation(PiranhaFrames, PiranhaTickCount, PiranhaFrameCount, PiranhaFrameIndices);
-      break;
-    case State_Anim11:
-      updateAnimation(FireFrames, FireTickCount, FireFrameCount);
-      break;
-    case State_Anim12:
-      updateAnimation(ItemsFrames, ItemsTickCount, ItemsFrameCount);
-      break;
-    case State_Anim13:
-      updateAnimation(ShellFrames, ShellTickCount, ShellFrameCount);
-      break;
-    case State_Anim14:
-      updateAnimation(WilyFrames, WilyTickCount, WilyFrameCount);
-      break;
-    case State_Anim15:
-      updateAnimation(BubbleFrames, BubbleTickCount, BubbleFrameCount);
-      break;
-    case State_Anim_Special:
+    case State_AudioVisualizer:
       break;
     case State_Snake:
       snakeGame.updateSnake(lastInput);
@@ -204,43 +78,12 @@ void loop()
   }
 
   updateCycling();
-  currentTickCount++;
   FastLED.delay(DELAY_TIME);
-}
-
-void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount, const int* frameIndices)
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(frames[frameIndices[currentFrameCount]][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(tickCount, frameCount);
-}
-
-void updateAnimation(const long frames[][NUM_LEDS], int tickCount, int frameCount)
-{
-  for(int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i] = pgm_read_dword(&(frames[currentFrameCount][Helpers::convertIndex(i)]));
-  }
-
-  updateFrame(tickCount, frameCount);
-}
-
-void updateFrame(int tickCount, int frameCount)
-{
-  FastLED.show();
-
-  if((currentTickCount % tickCount) == 0)
-  {
-    currentFrameCount = (currentFrameCount + 1) % frameCount;
-  }
 }
 
 void handleIRInput()
 {
-  eState curState = activeState;
+  int anim = currentAnim;
   
   if(irRecv.decode(&results))
   {
@@ -249,37 +92,47 @@ void handleIRInput()
       switch(results.value)
       {
         case INPUT_0:
-          activeState = State_Anim0;
+          activeState = State_Anim;
+          currentAnim = 0;
           break;
         case INPUT_1:
-          activeState = State_Anim1;
+          activeState = State_Anim;
+          currentAnim = 1;
           break;
         case INPUT_2:
-          activeState = State_Anim2;
+          activeState = State_Anim;
+          currentAnim = 2;
           break;
         case INPUT_3:
-          activeState = State_Anim3;
+          activeState = State_Anim;
+          currentAnim = 3;
           break;
         case INPUT_4:
-          activeState = State_Anim4;
+          activeState = State_Anim;
+          currentAnim = 4;
           break;
         case INPUT_5:
-          activeState = State_Anim5;
+          activeState = State_Anim;
+          currentAnim = 5;
           break;
         case INPUT_6:
-          activeState = State_Anim6;
+          activeState = State_Anim;
+          currentAnim = 6;
           break;
         case INPUT_7:
-          activeState = State_Anim7;
+          activeState = State_Anim;
+          currentAnim = 7;
           break;
         case INPUT_8:
-          activeState = State_Anim8;
+          activeState = State_Anim;
+          currentAnim = 8;
           break;
         case INPUT_9:
-          activeState = State_Anim9;
+          activeState = State_Anim;
+          currentAnim = 9;
           break;
-        case INPUT_SPECIAL:
-          activeState = State_Anim_Special;
+        case INPUT_AUDIO:
+          activeState = State_AudioVisualizer;
           break;
         case INPUT_BRIGHTNESS:
           updateBrightness();
@@ -288,26 +141,23 @@ void handleIRInput()
           activeState = State_Snake;
           break;
         case INPUT_RIGHT:
-          if(activeState <= State_Anim_Special)
+          if(activeState == State_Anim)
           {
-            activeState = (eState)((activeState + 1) % 11);
+            currentAnim = (currentAnim + 1) % NUM_ANIMS;
           }
           break;
         case INPUT_LEFT:
-          if(activeState <= State_Anim_Special)
+          if(activeState == State_Anim)
           {
-            if(activeState == State_Anim0)
+            currentAnim--;
+            if(currentAnim < 0)
             {
-              activeState = State_Anim_Special;
-            }
-            else
-            {
-              activeState = (eState)(activeState - 1);
+              currentAnim = NUM_ANIMS - 1;
             }
           }
           break;
           case INPUT_UP:
-            if(activeState <= State_Anim_Special && !cycling)
+            if(activeState == State_Anim && !cycling)
             {
               cycling = true;
               cycleCounter = 0;
@@ -323,27 +173,20 @@ void handleIRInput()
     
     irRecv.resume();
 
-    if(curState != activeState)
+    if(currentAnim != anim)
     {
       cycling = false;
-      reset();
     }
   }
 }
 
 void updateCycling()
 {
-  if(cycling && ++cycleCounter >= CYCLE_TICKS)
+  if(cycling && ++cycleCounter >= CYCLE_TICKS && activeState == State_Anim)
   {
     cycleCounter = 0;
-    activeState = (eState)((activeState + 1) % 11);
+    currentAnim = (currentAnim + 1) % NUM_ANIMS;
   }
-}
-
-void reset()
-{
-  currentFrameCount = 0;
-  currentTickCount = 0;
 }
 
 void updateBrightness()
@@ -351,4 +194,24 @@ void updateBrightness()
   brightness *= 2;
   brightness = brightness > MAX_BRIGHTNESS ? MIN_BRIGHTNESS : brightness;
   FastLED.setBrightness(brightness);
+}
+
+void setupAnimations()
+{
+  animations[0] = Animation(4, 2, 100, MegaManRunningFrames, MegaManRunningFrameIndices);
+  animations[1] = Animation(2, 1, 100, MegaManHeadFrames);
+  animations[2] = Animation(4, 2, 100, HeartContainerFrames);
+  animations[3] = Animation(4, 10, 100, TMNTFrames);
+  animations[4] = Animation(6, 5, 100, PokemonFrames, PokemonFrameIndices);
+  animations[5] = Animation(16, 1, 100, PokeBallFrames, PokeBallFrameIndices);
+  animations[6] = Animation(4, 1, 100, MarioWalkingFrames, MarioWalkingFrameIndices);
+  animations[7] = Animation(4, 2, 100, KirbyFrames, KirbyFrameIndices);
+  animations[8] = Animation(10, 1, 100, LinkWalkingFrames);
+  animations[9] = Animation(2, 5, 100, BubbleFrames);
+  animations[10] = Animation(4, 2, 100, NemoFrames, NemoFrameIndices);
+  animations[11] = Animation(6, 1, 100, PiranhaFrames, PiranhaFrameIndices);
+  animations[12] = Animation(10, 1, 100, FireFrames);
+  animations[13] = Animation(6, 1, 100, ShellFrames);
+  animations[14] = Animation(4, 1, 100, ItemsFrames);
+  animations[15] = Animation(6, 1, 100, WilyFrames);
 }

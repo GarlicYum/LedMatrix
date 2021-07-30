@@ -30,6 +30,9 @@ void SnakeGame::draw(CRGB* leds)
   leds[_applePos.Y * ROW_SIZE + _applePos.X] = CRGB::Red;
   drawBorder(leds);
   drawSnake(leds);
+
+  FastLED.show();
+  FastLED.delay(100);
 }
 
 void SnakeGame::handleInput(int input)

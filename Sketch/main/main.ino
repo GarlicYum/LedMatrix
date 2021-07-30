@@ -1,10 +1,11 @@
-#include <avr/pgmspace.h>
+#include <pgmspace.h>
 #include "FastLED.h"
 #include "SnakeGame.h"
 #include "Constants.h"
 #include <IRremote.h>
 #include "Frames.h"
 #include "Animation.h"
+#include "AudioVisualizer.h"
 
 #define DATA_PIN 5
 #define IR_REC_PIN 6
@@ -12,7 +13,6 @@
 #define MAX_BRIGHTNESS 64
 #define MIN_BRIGHTNESS 4
 #define CYCLE_TICKS 120
-#define DELAY_TIME 100
 #define NUM_ANIMS 16
 
 CRGB leds[NUM_LEDS];
@@ -41,12 +41,11 @@ eState activeState = State_Anim;
 int brightness = 16;
 int lastInput = -1;
 bool cycling = false;
-int cycleCounter = 0;
+AudioVisualizer audioVisualizer(leds);
 
 void setupAnimations();
 void handleIRInput();
 void updateBrightness();
-void updateCycling();
 
 IRrecv irRecv(IR_REC_PIN);
 decode_results results;
@@ -71,14 +70,20 @@ void loop()
       animations[currentAnim].updateAnim(leds);
       break;
     case State_AudioVisualizer:
+      audioVisualizer.updateVisualizer();
       break;
     case State_Snake:
       snakeGame.updateSnake(lastInput);
       snakeGame.draw(leds);
   }
 
-  updateCycling();
-  FastLED.delay(DELAY_TIME);
+  EVERY_N_SECONDS(10) 
+  {
+    if (cycling && activeState == State_Anim) 
+    {
+      currentAnim = (currentAnim + 1) % NUM_ANIMS;
+    }
+  }
 }
 
 void handleIRInput()
@@ -132,6 +137,11 @@ void handleIRInput()
           currentAnim = 9;
           break;
         case INPUT_AUDIO:
+          if(activeState == State_AudioVisualizer)
+          {
+            audioVisualizer.switchMode();
+          }
+        
           activeState = State_AudioVisualizer;
           break;
         case INPUT_BRIGHTNESS:
@@ -160,11 +170,19 @@ void handleIRInput()
             if(activeState == State_Anim && !cycling)
             {
               cycling = true;
-              cycleCounter = 0;
+            }
+            else if(activeState == State_AudioVisualizer)
+            {
+              audioVisualizer.setAutoMode(true);
             }
             break;
            case INPUT_DOWN:
             cycling = false;
+
+            if(activeState == State_AudioVisualizer)
+            {
+              audioVisualizer.setAutoMode(false);
+            }
             break;
       }
 
@@ -177,15 +195,6 @@ void handleIRInput()
     {
       cycling = false;
     }
-  }
-}
-
-void updateCycling()
-{
-  if(cycling && ++cycleCounter >= CYCLE_TICKS && activeState == State_Anim)
-  {
-    cycleCounter = 0;
-    currentAnim = (currentAnim + 1) % NUM_ANIMS;
   }
 }
 

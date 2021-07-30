@@ -42,5 +42,5 @@ void Animation::updateAnim(CRGB* leds)
 
   _currentTickCount = (_currentTickCount + 1) % _tickCount;
 
-  delay(_delayTime);
+  FastLED.delay(_delayTime);
 }

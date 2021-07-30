@@ -1,3 +1,6 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
 #define LEDS_PER_UNIT 64
 #define UNIT_DIM 8
 #define ROW_SIZE 24
@@ -21,3 +24,5 @@
 #define INPUT_8 0xFFA857
 #define INPUT_9 0xFF906F
 #define INPUT_AUDIO 0xFFB04F
+
+#endif

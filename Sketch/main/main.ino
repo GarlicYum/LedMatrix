@@ -13,7 +13,7 @@
 #define MAX_BRIGHTNESS 64
 #define MIN_BRIGHTNESS 4
 #define CYCLE_TICKS 120
-#define NUM_ANIMS 16
+#define NUM_ANIMS 20
 
 CRGB leds[NUM_LEDS];
 
@@ -207,20 +207,26 @@ void updateBrightness()
 
 void setupAnimations()
 {
-  animations[0] = Animation(4, 2, 100, MegaManRunningFrames, MegaManRunningFrameIndices);
-  animations[1] = Animation(2, 1, 100, MegaManHeadFrames);
-  animations[2] = Animation(4, 2, 100, HeartContainerFrames);
-  animations[3] = Animation(4, 10, 100, TMNTFrames);
-  animations[4] = Animation(6, 5, 100, PokemonFrames, PokemonFrameIndices);
-  animations[5] = Animation(16, 1, 100, PokeBallFrames, PokeBallFrameIndices);
-  animations[6] = Animation(4, 1, 100, MarioWalkingFrames, MarioWalkingFrameIndices);
-  animations[7] = Animation(4, 2, 100, KirbyFrames, KirbyFrameIndices);
-  animations[8] = Animation(10, 1, 100, LinkWalkingFrames);
-  animations[9] = Animation(2, 5, 100, BubbleFrames);
-  animations[10] = Animation(4, 2, 100, NemoFrames, NemoFrameIndices);
-  animations[11] = Animation(6, 1, 100, PiranhaFrames, PiranhaFrameIndices);
-  animations[12] = Animation(10, 1, 100, FireFrames);
-  animations[13] = Animation(6, 1, 100, ShellFrames);
-  animations[14] = Animation(4, 1, 100, ItemsFrames);
-  animations[15] = Animation(6, 1, 100, WilyFrames);
+  int i = 0;
+  
+  animations[i++] = Animation(4, 2, 100, MegaManRunningFrames, MegaManRunningFrameIndices);
+  animations[i++] = Animation(6, 1, 100, WilyFrames);
+  animations[i++] = Animation(2, 1, 100, MegaManHeadFrames);
+  animations[i++] = Animation(4, 2, 100, HeartContainerFrames);
+  animations[i++] = Animation(4, 10, 100, TMNTFrames);
+  animations[i++] = Animation(6, 5, 100, PokemonFrames, PokemonFrameIndices);
+  animations[i++] = Animation(16, 1, 100, PokeBallFrames, PokeBallFrameIndices);
+  animations[i++] = Animation(4, 1, 100, MarioWalkingFrames, MarioWalkingFrameIndices);
+  animations[i++] = Animation(6, 1, 100, PiranhaFrames, PiranhaFrameIndices);
+  animations[i++] = Animation(6, 1, 100, ShellFrames);
+  animations[i++] = Animation(4, 1, 100, ItemsFrames);
+  animations[i++] = Animation(4, 2, 100, KirbyFrames, KirbyFrameIndices);
+  animations[i++] = Animation(10, 1, 100, KirbyWalkingFrames);
+  animations[i++] = Animation(2, 3, 100, LinkNesFrames);
+  animations[i++] = Animation(8, 1, 100, LinkPastFrames);
+  animations[i++] = Animation(10, 1, 100, LinkWalkingFrames);
+  animations[i++] = Animation(2, 5, 100, BubbleFrames);
+  animations[i++] = Animation(4, 2, 100, NemoFrames, NemoFrameIndices);
+  animations[i++] = Animation(10, 1, 100, FireFrames);
+  animations[i++] = Animation(4, 2, 100, WizardFrames);
 }

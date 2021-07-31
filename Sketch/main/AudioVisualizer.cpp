@@ -26,10 +26,15 @@ DEFINE_GRADIENT_PALETTE( redyellow_gp ) {
 128,   231,   0,    0,   //red
 192,   255, 218,    0,   //yellow
 255,   200, 200,  200 }; //white
+DEFINE_GRADIENT_PALETTE( standard_gp ) {
+  0, 0, 255, 60,   //green
+127, 255, 192,   0,   //yellow
+255,   231,   0, 0 };  //red
 CRGBPalette16 purplePal = purple_gp;
 CRGBPalette16 outrunPal = outrun_gp;
 CRGBPalette16 greenbluePal = greenblue_gp;
 CRGBPalette16 heatPal = redyellow_gp;
+CRGBPalette16 standardPal = standard_gp;
 
 AudioVisualizer::AudioVisualizer(CRGB* leds)
 : leds(leds)
@@ -132,6 +137,9 @@ void AudioVisualizer::draw()
 
     switch (_mode) 
     {
+      case Mode_Standard:
+        standardBars(band, barHeight);
+        break;
       case Mode_Rainbow:
         rainbowBars(band, barHeight);
         whitePeak(band);
@@ -165,6 +173,14 @@ void AudioVisualizer::switchMode()
 void AudioVisualizer::setAutoMode(bool b)
 {
   autoChangePatterns = b;
+}
+
+void AudioVisualizer::standardBars(int band, int barHeight) 
+{
+  for (int y = TOP; y >= TOP - barHeight; y--) 
+  {
+    leds[y * ROW_SIZE + band] = ColorFromPalette(standardPal, y * (255 / (barHeight + 1)));
+  }
 }
 
 void AudioVisualizer::rainbowBars(int band, int barHeight) 

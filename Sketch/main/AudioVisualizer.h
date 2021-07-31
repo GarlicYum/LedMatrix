@@ -14,6 +14,7 @@ class AudioVisualizer
   
     enum eModes
     {
+      Mode_Standard,
       Mode_Rainbow,
       Mode_Purple,
       Mode_Changing,
@@ -36,7 +37,8 @@ class AudioVisualizer
     void decayPeak();
     void incrementColorTimer();
     void cycleModes();
-    
+
+    void standardBars(int band, int barHeight);
     void rainbowBars(int band, int barHeight);
     void purpleBars(int band, int barHeight);
     void changingBars(int band, int barHeight);
@@ -44,7 +46,7 @@ class AudioVisualizer
     void whitePeak(int band);
     void outrunPeak(int band);
   
-    eModes _mode = Mode_Rainbow;
+    eModes _mode = Mode_Standard;
 
     CRGB* leds;
     unsigned int sampling_period_us;

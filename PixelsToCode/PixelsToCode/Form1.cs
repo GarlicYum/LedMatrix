@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PixelsToCode
@@ -11,6 +12,7 @@ namespace PixelsToCode
         List<Button> cells = new List<Button>();
         int gridDim = 24;
         GenerateForm generateForm = new GenerateForm();
+        MergeForm mergeForm = new MergeForm();
         public Form1()
         {
             InitializeComponent();
@@ -173,6 +175,64 @@ namespace PixelsToCode
             }
 
             cells[0].BackColor = Color.Black;
+        }
+
+        private void numericUpDown1_ValueChanged( object sender, EventArgs e )
+        {
+            generateForm.xOffset = (int)numericUpDown1.Value;
+            generateForm.GenerateSprite();
+
+            for( int i = 0; i < generateForm.Colors.Length; i++ )
+            {
+                cells[i].BackColor = generateForm.Colors[i];
+            }
+        }
+
+        private void numericUpDown2_ValueChanged( object sender, EventArgs e )
+        {
+            generateForm.yOffset = ( int )numericUpDown2.Value;
+            generateForm.GenerateSprite();
+
+            for( int i = 0; i < generateForm.Colors.Length; i++ )
+            {
+                cells[i].BackColor = generateForm.Colors[i];
+            }
+        }
+
+        private void button1_Click( object sender, EventArgs e )
+        {
+            if( mergeForm.ShowDialog() == DialogResult.OK )
+            {
+                string output = "const long " + mergeForm.AnimationName + "[] PROGMEM =\n{\n";
+                for(int i = 0; i < mergeForm.fileNames.Count; i++ )
+                {
+                    var content = File.ReadAllLines(mergeForm.fileNames[i]).ToList();
+                    for( int j = 2; j < content.Count - 1; j++ )
+                    {
+                        output += content[j];
+                        if(j < content.Count - 2)
+                        {
+                            output += "\n";
+                        }
+                    }
+
+                    if(i < mergeForm.fileNames.Count - 1)
+                    {
+                        output += ",\n\n";
+                    }
+                    else
+                    {
+                        output += "\n";
+                    }
+                }
+                output += "};";
+
+                if(output.Length > 0)
+                {
+                    string path = Path.GetDirectoryName( mergeForm.fileNames[0] );
+                    File.WriteAllText( path + "\\" + mergeForm.AnimationName + ".txt", output );
+                }
+            }
         }
     }
 }

@@ -19,6 +19,8 @@ namespace PixelsToCode
         string path;
         protected Image image;
         protected Thread getImageThread;
+        public int xOffset { get; set; }
+        public int yOffset { get; set; }
 
         public Color[] Colors { get; private set; } = new Color[24 * 24];
 
@@ -86,39 +88,7 @@ namespace PixelsToCode
 
         private void btnOK_Click( object sender, EventArgs e )
         {
-            if(image != null)
-            {
-                double pixelSize = GetPixelSize();
-                int minY = GetMinY();
-                int minX = GetMinX();
-
-                if(pixelSize != -1)
-                {
-                    double yStart = minY + (pixelSize / 2);
-                    double xStart = minX + (pixelSize / 2);
-                    Bitmap img = new Bitmap(image);
-
-                    for( int y = 0; y < 24; y++ )
-                    {
-                        int sampleY = (int)(yStart + y * pixelSize);
-                        for(int x = 0; x < 24; x++ )
-                        {
-                            int sampleX = (int)(xStart + x * pixelSize);
-
-                            if(sampleX >= image.Width || sampleY >= image.Height ||
-                                x < MinXIndex(pixelSize, xStart, yStart, y, img) ||
-                                x > MaxXIndex( pixelSize, xStart, yStart, y, img ))
-                            {
-                                Colors[y * 24 + x] = Color.Black;
-                            }
-                            else
-                            {
-                                Colors[y * 24 + x] = img.GetPixel( sampleX, sampleY );
-                            }
-                        }
-                    }
-                }
-            }
+            GenerateSprite();
         }
 
         private int MinXIndex(double pixelSize, double xStart, double yStart, int y, Bitmap img)
@@ -128,7 +98,7 @@ namespace PixelsToCode
                 int sampleX = (int)(xStart + x * pixelSize);
                 int sampleY = (int)(yStart + y * pixelSize);
 
-                if(sampleX < img.Width && sampleY < img.Height)
+                if(sampleX < img.Width && sampleY < img.Height && sampleX >= 0 && sampleY >= 0)
                 {
                     Color c = img.GetPixel(sampleX, sampleY);
                     if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
@@ -148,7 +118,7 @@ namespace PixelsToCode
                 int sampleX = (int)(xStart + x * pixelSize);
                 int sampleY = (int)(yStart + y * pixelSize);
 
-                if( sampleX < img.Width && sampleY < img.Height )
+                if( sampleX < img.Width && sampleY < img.Height && sampleX >= 0 && sampleY >= 0 )
                 {
                     Color c = img.GetPixel(sampleX, sampleY);
                     if( c.ToArgb() != Color.White.ToArgb() && c.ToArgb() != Color.Black.ToArgb() && c.A != 0 )
@@ -250,6 +220,43 @@ namespace PixelsToCode
             }
 
             return ( maxY - minY ) / (double)numPixels.Value;
+        }
+
+        public void GenerateSprite()
+        {
+            if( image != null )
+            {
+                double pixelSize = GetPixelSize();
+                int minY = GetMinY();
+                int minX = GetMinX();
+
+                if( pixelSize != -1 )
+                {
+                    double yStart = minY + (pixelSize / 2) + pixelSize * yOffset;
+                    double xStart = minX + (pixelSize / 2) + pixelSize * xOffset;
+                    Bitmap img = new Bitmap(image);
+
+                    for( int y = 0; y < 24; y++ )
+                    {
+                        int sampleY = (int)(yStart + y * pixelSize);
+                        for( int x = 0; x < 24; x++ )
+                        {
+                            int sampleX = (int)(xStart + x * pixelSize);
+
+                            if( sampleX >= image.Width || sampleY >= image.Height ||
+                                x < MinXIndex( pixelSize, xStart, yStart, y, img ) ||
+                                x > MaxXIndex( pixelSize, xStart, yStart, y, img ) )
+                            {
+                                Colors[y * 24 + x] = Color.Black;
+                            }
+                            else
+                            {
+                                Colors[y * 24 + x] = img.GetPixel( sampleX, sampleY );
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

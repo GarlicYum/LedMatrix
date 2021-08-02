@@ -41,7 +41,7 @@ class SnakeGame
     bool _started = false;
     bool _alive = true;
     bool _hasEaten = false;
-    int _ticksBeforeUpdate = 2;
+    int _ticksBeforeUpdate = 4;
     int _currentTick = 0;
     int _length = 1;
     int _deathAnimCounter = 1;

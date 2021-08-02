@@ -32,7 +32,7 @@ void SnakeGame::draw(CRGB* leds)
   drawSnake(leds);
 
   FastLED.show();
-  FastLED.delay(100);
+  FastLED.delay(50);
 }
 
 void SnakeGame::handleInput(int input)

@@ -12,8 +12,7 @@
 #define LED_TYPE    WS2812
 #define MAX_BRIGHTNESS 64
 #define MIN_BRIGHTNESS 4
-#define CYCLE_TICKS 120
-#define NUM_ANIMS 20
+#define NUM_ANIMS 29
 
 CRGB leds[NUM_LEDS];
 
@@ -28,12 +27,28 @@ enum eState
 int currentAnim = 0;
 Animation animations[NUM_ANIMS];
 const int MegaManRunningFrameIndices[] = {0, 1, 2, 1};
-const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5};
+const int PokemonFrameIndices[] = {0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 5, 4, 5, 4, 5, 4, 5, 6,7,6,7,6,7,6,7,
+8,9,8,9,8,9,8,9,10,11,10,11,10,11,10,11,12,13,12,13,12,13,12,13,14,15,14,15,14,15,14,15,16,17,16,17,16,17,16,17,18,19,18,19,18,19,18,19,
+20,21,20,21,20,21,20,21,22,23,22,23,22,23,22,23,24,25,24,25,24,25,24,25,26,27,26,27,26,27,26,27,28,29,28,29,28,29,28,29,30,31,30,31,30,31,30,31,
+32,33,32,33,32,33,32,33,34,35,34,35,34,35,34,35,36,37,36,37,36,37,36,37,38,39,38,39,38,39,38,39,40,41,40,41,40,41,40,41};
 const int PokeBallFrameIndices[] = {0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 6, 7, 8, 9};
 const int MarioWalkingFrameIndices[] = {0, 1, 0, 2};
 const int KirbyFrameIndices[] = {0, 1, 2, 1};
 const int NemoFrameIndices[] = {0, 1, 2, 1};
 const int PiranhaFrameIndices[] = {0, 1, 2, 3, 2, 1};
+const int AdventureAttackFrameIndices[] = {0, 0, 0, 0, 0, 1, 2, 3, 4};
+const int BabyYodaFrameIndices[] = {0, 0, 1, 1, 1, 1, 0, 0, 2, 2, 3, 4, 3, 2, 2};
+const int PikaFrameIndices[] = {0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 20, 20, 
+20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 22, 23, 24, 25, 25};
+const int JediFrameIndices[] = {0,0,0,0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,12,14,12,13,12,14,12,13,12,14,12,13,12,14};
+const int JakeFrameIndices[] = {0,1,2,3,4,5,6,7,8,0,1,2,3,4,5,6,7,8,0,1,2,3,4,5,6,7,8,9,10,11,12,13,13,13,14,14,14,13,13,13,14,14,14,13,13,13,14,14,14,13,13,13,14,14,14,13,13,13,14,14,14,15,16,17,18,19,20,
+21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,23,23,23,23,23,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,27,28};
+const int TurtleFrameIndices[] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,
+8,9,10,11,12,13,14,15,8,9,10,11,12,13,14,15,8,9,10,11,12,13,14,15,8,9,10,11,12,13,14,15,8,9,10,11,12,13,14,15,
+16,17,18,19,20,21,22,23,16,17,18,19,20,21,22,23,16,17,18,19,20,21,22,23,16,17,18,19,20,21,22,23,16,17,18,19,20,21,22,23,
+24,25,26,27,28,29,30,31,24,25,26,27,28,29,30,31,24,25,26,27,28,29,30,31,24,25,26,27,28,29,30,31,24,25,26,27,28,29,30,31,
+32,33,34,35,36,37,38,39,32,33,34,35,36,37,38,39,32,33,34,35,36,37,38,39,32,33,34,35,36,37,38,39,32,33,34,35,36,37,38,39,
+40,41,42,43,44,45,46,47,40,41,42,43,44,45,46,47,40,41,42,43,44,45,46,47,40,41,42,43,44,45,46,47,40,41,42,43,44,45,46,47};
 
 // Others
 SnakeGame snakeGame;
@@ -208,25 +223,33 @@ void updateBrightness()
 void setupAnimations()
 {
   int i = 0;
-  
-  animations[i++] = Animation(4, 2, 100, MegaManRunningFrames, MegaManRunningFrameIndices);
-  animations[i++] = Animation(6, 1, 100, WilyFrames);
-  animations[i++] = Animation(2, 1, 100, MegaManHeadFrames);
-  animations[i++] = Animation(4, 2, 100, HeartContainerFrames);
-  animations[i++] = Animation(4, 10, 100, TMNTFrames);
-  animations[i++] = Animation(6, 5, 100, PokemonFrames, PokemonFrameIndices);
-  animations[i++] = Animation(16, 1, 100, PokeBallFrames, PokeBallFrameIndices);
-  animations[i++] = Animation(4, 1, 100, MarioWalkingFrames, MarioWalkingFrameIndices);
-  animations[i++] = Animation(6, 1, 100, PiranhaFrames, PiranhaFrameIndices);
-  animations[i++] = Animation(6, 1, 100, ShellFrames);
-  animations[i++] = Animation(4, 1, 100, ItemsFrames);
-  animations[i++] = Animation(4, 2, 100, KirbyFrames, KirbyFrameIndices);
-  animations[i++] = Animation(10, 1, 100, KirbyWalkingFrames);
-  animations[i++] = Animation(2, 3, 100, LinkNesFrames);
-  animations[i++] = Animation(8, 1, 100, LinkPastFrames);
-  animations[i++] = Animation(10, 1, 100, LinkWalkingFrames);
-  animations[i++] = Animation(2, 5, 100, BubbleFrames);
-  animations[i++] = Animation(4, 2, 100, NemoFrames, NemoFrameIndices);
-  animations[i++] = Animation(10, 1, 100, FireFrames);
-  animations[i++] = Animation(4, 2, 100, WizardFrames);
+  animations[i++] = Animation(sizeof(MegaManRunningFrameIndices) / sizeof(*MegaManRunningFrameIndices), 2, 100, MegaManRunningFrames, MegaManRunningFrameIndices);
+  animations[i++] = Animation(sizeof(WilyFrames) / sizeof(*WilyFrames) / NUM_LEDS, 1, 100, WilyFrames);
+  animations[i++] = Animation(sizeof(MegaManHeadFrames) / sizeof(*MegaManHeadFrames) / NUM_LEDS, 1, 100, MegaManHeadFrames);
+  animations[i++] = Animation(sizeof(HeartContainerFrames) / sizeof(*HeartContainerFrames) / NUM_LEDS, 2, 100, HeartContainerFrames);
+  animations[i++] = Animation(sizeof(TMNTFrames) / sizeof(*TMNTFrames) / NUM_LEDS, 10, 100, TMNTFrames);
+  animations[i++] = Animation(sizeof(TurtleFrameIndices) / sizeof(*TurtleFrameIndices), 1, 100, TurtleFrames, TurtleFrameIndices);
+  animations[i++] = Animation(sizeof(PokemonFrameIndices) / sizeof(*PokemonFrameIndices), 5, 100, PokemonFrames, PokemonFrameIndices);
+  animations[i++] = Animation(sizeof(PokeBallFrameIndices) / sizeof(*PokeBallFrameIndices), 1, 100, PokeBallFrames, PokeBallFrameIndices);
+  animations[i++] = Animation(sizeof(PikaFrameIndices) / sizeof(*PikaFrameIndices), 1, 50, PikaFrames, PikaFrameIndices);
+  animations[i++] = Animation(sizeof(MarioWalkingFrameIndices) / sizeof(*MarioWalkingFrameIndices), 1, 100, MarioWalkingFrames, MarioWalkingFrameIndices);
+  animations[i++] = Animation(sizeof(PiranhaFrameIndices) / sizeof(*PiranhaFrameIndices), 1, 100, PiranhaFrames, PiranhaFrameIndices);
+  animations[i++] = Animation(sizeof(ShellFrames) / sizeof(*ShellFrames) / NUM_LEDS, 1, 100, ShellFrames);
+  animations[i++] = Animation(sizeof(ItemsFrames) / sizeof(*ItemsFrames) / NUM_LEDS, 1, 100, ItemsFrames);
+  animations[i++] = Animation(sizeof(KirbyFrameIndices) / sizeof(*KirbyFrameIndices), 2, 100, KirbyFrames, KirbyFrameIndices);
+  animations[i++] = Animation(sizeof(KirbyWalkingFrames) / sizeof(*KirbyWalkingFrames) / NUM_LEDS, 1, 100, KirbyWalkingFrames);
+  animations[i++] = Animation(sizeof(LinkNesFrames) / sizeof(*LinkNesFrames) / NUM_LEDS, 3, 100, LinkNesFrames);
+  animations[i++] = Animation(sizeof(LinkPastFrames) / sizeof(*LinkPastFrames) / NUM_LEDS, 1, 100, LinkPastFrames);
+  animations[i++] = Animation(sizeof(LinkWalkingFrames) / sizeof(*LinkWalkingFrames) / NUM_LEDS, 1, 100, LinkWalkingFrames);
+  animations[i++] = Animation(sizeof(BubbleFrames) / sizeof(*BubbleFrames) / NUM_LEDS, 5, 100, BubbleFrames);
+  animations[i++] = Animation(sizeof(NemoFrameIndices) / sizeof(*NemoFrameIndices), 2, 100, NemoFrames, NemoFrameIndices);
+  animations[i++] = Animation(sizeof(FireFrames) / sizeof(*FireFrames) / NUM_LEDS, 1, 100, FireFrames);
+  animations[i++] = Animation(sizeof(WizardFrames) / sizeof(*WizardFrames) / NUM_LEDS, 2, 100, WizardFrames);
+  animations[i++] = Animation(sizeof(AdventureIdleFrames) / sizeof(*AdventureIdleFrames) / NUM_LEDS, 2, 100, AdventureIdleFrames);
+  animations[i++] = Animation(sizeof(AdventureAttackFrameIndices) / sizeof(*AdventureAttackFrameIndices), 1, 100, AdventureAttackFrames, AdventureAttackFrameIndices);
+  animations[i++] = Animation(sizeof(JakeFrameIndices) / sizeof(*JakeFrameIndices), 1, 60, JakeFrames, JakeFrameIndices);
+  animations[i++] = Animation(sizeof(DinoFrames) / sizeof(*DinoFrames) / NUM_LEDS, 2, 100, DinoFrames);
+  animations[i++] = Animation(sizeof(BabyYodaFrameIndices) / sizeof(*BabyYodaFrameIndices), 1, 100, BabyYodaFrames, BabyYodaFrameIndices);
+  animations[i++] = Animation(sizeof(YodaFrames) / sizeof(*YodaFrames) / NUM_LEDS, 1, 60, YodaFrames);
+  animations[i++] = Animation(sizeof(JediFrameIndices) / sizeof(*JediFrameIndices), 1, 100, JediFrames, JediFrameIndices);
 }

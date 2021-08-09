@@ -7,11 +7,10 @@
 #include "Animation.h"
 #include "AudioVisualizer.h"
 
-#define DATA_PIN 5
+#define DATA_PIN D21
 #define IR_REC_PIN 6
 #define LED_TYPE    WS2812
-#define MAX_BRIGHTNESS 64
-#define MIN_BRIGHTNESS 4
+#define BRIGHTNESS 32
 #define NUM_ANIMS 29
 
 CRGB leds[NUM_LEDS];
@@ -53,50 +52,58 @@ const int TurtleFrameIndices[] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,
 // Others
 SnakeGame snakeGame;
 eState activeState = State_Anim;
-int brightness = 16;
 int lastInput = -1;
 bool cycling = false;
+bool paused = false;
 AudioVisualizer audioVisualizer(leds);
 
 void setupAnimations();
 void handleIRInput();
-void updateBrightness();
 
 IRrecv irRecv(IR_REC_PIN);
 decode_results results;
 
 void setup() 
 {
+  Serial.begin(115200);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  FastLED.setBrightness(brightness);
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.clear();
   irRecv.enableIRIn();
   setupAnimations();
 }
 
 void loop() 
-{
+{  
   handleIRInput();
 
   FastLED.clear();
 
-  switch(activeState)
+  if(paused)
   {
-    case State_Anim:
-      animations[currentAnim].updateAnim(leds);
-      break;
-    case State_AudioVisualizer:
-      audioVisualizer.updateVisualizer();
-      break;
-    case State_Snake:
-      snakeGame.updateSnake(lastInput);
-      snakeGame.draw(leds);
+    delay(100);
   }
-
-  EVERY_N_SECONDS(10) 
+  else
   {
-    if (cycling && activeState == State_Anim) 
+    switch(activeState)
     {
-      currentAnim = (currentAnim + 1) % NUM_ANIMS;
+      case State_Anim:
+        animations[currentAnim].updateAnim(leds);
+        break;
+      case State_AudioVisualizer:
+        audioVisualizer.updateVisualizer();
+        break;
+      case State_Snake:
+        snakeGame.updateSnake(lastInput);
+        snakeGame.draw(leds);
+    }
+    
+    EVERY_N_SECONDS(10) 
+    {
+      if (cycling && activeState == State_Anim) 
+      {
+        currentAnim = (currentAnim + 1) % NUM_ANIMS;
+      }
     }
   }
 }
@@ -109,6 +116,17 @@ void handleIRInput()
   {
     if(results.value != 0xFFFFFFFF)
     {
+      if(results.value == INPUT_PAUSE)
+      {
+        paused = !paused;
+      }      
+
+      if(paused)
+      {
+        irRecv.resume();
+        return;
+      }
+
       switch(results.value)
       {
         case INPUT_0:
@@ -159,9 +177,6 @@ void handleIRInput()
         
           activeState = State_AudioVisualizer;
           break;
-        case INPUT_BRIGHTNESS:
-          updateBrightness();
-          break;
         case INPUT_OK:
           activeState = State_Snake;
           break;
@@ -211,13 +226,6 @@ void handleIRInput()
       cycling = false;
     }
   }
-}
-
-void updateBrightness()
-{
-  brightness *= 2;
-  brightness = brightness > MAX_BRIGHTNESS ? MIN_BRIGHTNESS : brightness;
-  FastLED.setBrightness(brightness);
 }
 
 void setupAnimations()

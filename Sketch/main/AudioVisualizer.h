@@ -19,14 +19,15 @@ class AudioVisualizer
       Mode_Purple,
       Mode_Changing,
       Mode_Center,
-      Mode_WhitePeak,
       Mode_OutrunPeak,
       Num_Modes
     };
 
     void updateVisualizer();
-    void switchMode();
+    void incrementMode();
+    void decrementMode();
     void setAutoMode(bool b);
+    void changeWidth();
   
   private:
     void getSamples();
@@ -59,6 +60,7 @@ class AudioVisualizer
     arduinoFFT FFT;
     bool autoChangePatterns = false;
     uint8_t colorTimer = 0;
+    int width = 1;
 };
 
 #endif

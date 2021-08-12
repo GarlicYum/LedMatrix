@@ -7,8 +7,8 @@
 #include "Animation.h"
 #include "AudioVisualizer.h"
 
-#define DATA_PIN D21
-#define IR_REC_PIN 6
+#define LED_PIN 5
+#define IR_REC_PIN 4
 #define LED_TYPE    WS2812
 #define BRIGHTNESS 32
 #define NUM_ANIMS 29
@@ -53,7 +53,7 @@ const int TurtleFrameIndices[] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,
 SnakeGame snakeGame;
 eState activeState = State_Anim;
 int lastInput = -1;
-bool cycling = false;
+bool cycling = true;
 bool paused = false;
 AudioVisualizer audioVisualizer(leds);
 
@@ -66,7 +66,7 @@ decode_results results;
 void setup() 
 {
   Serial.begin(115200);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
   irRecv.enableIRIn();
@@ -172,7 +172,7 @@ void handleIRInput()
         case INPUT_AUDIO:
           if(activeState == State_AudioVisualizer)
           {
-            audioVisualizer.switchMode();
+            audioVisualizer.changeWidth();
           }
         
           activeState = State_AudioVisualizer;
@@ -185,6 +185,10 @@ void handleIRInput()
           {
             currentAnim = (currentAnim + 1) % NUM_ANIMS;
           }
+          else if(activeState == State_AudioVisualizer)
+          {
+            audioVisualizer.incrementMode();
+          }
           break;
         case INPUT_LEFT:
           if(activeState == State_Anim)
@@ -194,6 +198,10 @@ void handleIRInput()
             {
               currentAnim = NUM_ANIMS - 1;
             }
+          }
+          else if(activeState == State_AudioVisualizer)
+          {
+            audioVisualizer.decrementMode();
           }
           break;
           case INPUT_UP:

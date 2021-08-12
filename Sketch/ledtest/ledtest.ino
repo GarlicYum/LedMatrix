@@ -1,8 +1,8 @@
 #include <FastLED.h>
 
-#define DATA_PIN 5
+#define LED_PIN 5
 #define LED_TYPE    WS2812
-#define BRIGHTNESS 16
+#define BRIGHTNESS 64
 #define NUM_LEDS 576
 #define LEDS_PER_UNIT 64
 #define UNIT_DIM 8
@@ -20,14 +20,14 @@ int convertIndex(int i)
 
 void setup() {
   // put your setup code here, to run once:
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
 
 void loop() {
   FastLED.clear();
-  leds[convertIndex(curIndex)] = CRGB(0255, 0, 0);
+  leds[convertIndex(curIndex)] = CRGB(0, 0, 255);
   curIndex = (curIndex + 1) % NUM_LEDS;
   FastLED.show();
   FastLED.delay(100);

@@ -113,6 +113,11 @@ void AudioVisualizer::analyzeResults()
   }
 }
 
+void AudioVisualizer::changeWidth()
+{
+  width = max(1, (width + 1) % 4);
+}
+
 void AudioVisualizer::draw()
 {
   // Process the FFT data into bar heights
@@ -164,10 +169,24 @@ void AudioVisualizer::draw()
   }
 }
 
-void AudioVisualizer::switchMode()
+void AudioVisualizer::incrementMode()
 {
   autoChangePatterns = false;
   _mode = (eModes)((_mode + 1) % Num_Modes);
+}
+
+void AudioVisualizer::decrementMode()
+{
+  autoChangePatterns = false;
+  int modeVal = (int)_mode - 1;
+  if(modeVal < 0)
+  {
+    _mode = Mode_OutrunPeak;
+  }
+  else
+  {
+    _mode = (eModes)modeVal;
+  }
 }
 
 void AudioVisualizer::setAutoMode(bool b)
@@ -177,61 +196,89 @@ void AudioVisualizer::setAutoMode(bool b)
 
 void AudioVisualizer::standardBars(int band, int barHeight) 
 {
-  for (int y = TOP; y >= TOP - barHeight; y--) 
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
   {
-    leds[y * ROW_SIZE + band] = ColorFromPalette(standardPal, y * (255 / (barHeight + 1)));
+    for (int y = TOP; y >= TOP - barHeight; y--) 
+    {
+      leds[y * ROW_SIZE + x] = ColorFromPalette(standardPal, y * (255 / (barHeight + 1)));
+    }
   }
 }
 
 void AudioVisualizer::rainbowBars(int band, int barHeight) 
 {
-  for (int y = TOP; y >= TOP - barHeight; y--) 
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
   {
-    leds[y * ROW_SIZE + band] = CHSV(band * (255 / ROW_SIZE), 255, 255);
+    for (int y = TOP; y >= TOP - barHeight; y--) 
+    {
+      leds[y * ROW_SIZE + x] = CHSV(band * (255 / ROW_SIZE), 255, 255);
+    }
   }
 }
 
 void AudioVisualizer::purpleBars(int band, int barHeight) 
 {
-  for (int y = TOP; y >= TOP - barHeight; y--) 
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
   {
-    leds[y * ROW_SIZE + band] = ColorFromPalette(purplePal, y * (255 / (barHeight + 1)));
+    for (int y = TOP; y >= TOP - barHeight; y--) 
+    {
+      leds[y * ROW_SIZE + x] = ColorFromPalette(purplePal, y * (255 / (barHeight + 1)));
+    }
   }
 }
 
 void AudioVisualizer::changingBars(int band, int barHeight) 
 {
-  for (int y = TOP; y >= TOP - barHeight; y--) 
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
   {
-    leds[y * ROW_SIZE + band] = CHSV(y * (255 / ROW_SIZE) + colorTimer, 255, 255);
+    for (int y = TOP; y >= TOP - barHeight; y--) 
+    {
+      leds[y * ROW_SIZE + x] = CHSV(y * (255 / ROW_SIZE) + colorTimer, 255, 255);
+    }
   }
 }
 
 void AudioVisualizer::centerBars(int band, int barHeight) 
 {
-  if (barHeight & 1 == 0) 
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
   {
-    barHeight--;
-  }
+    if (barHeight & 1 == 0) 
+    {
+      barHeight--;
+    }
     
-  int yStart = ((ROW_SIZE - barHeight) / 2 );
-  for (int y = yStart; y <= (yStart + barHeight); y++) 
-  {
-    int colorIndex = constrain((y - yStart) * (255 / barHeight), 0, 255);
-    leds[y * ROW_SIZE + band] = ColorFromPalette(heatPal, colorIndex);
+    int yStart = ((ROW_SIZE - barHeight) / 2 );
+    for (int y = yStart; y <= (yStart + barHeight); y++) 
+    {
+      int colorIndex = constrain((y - yStart) * (255 / barHeight), 0, 255);
+      leds[y * ROW_SIZE + x] = ColorFromPalette(heatPal, colorIndex);
+    }
   }
 }
 
 void AudioVisualizer::whitePeak(int band) 
 {
   int peakHeight = TOP - peak[band] - 1;
-  leds[peakHeight * ROW_SIZE + band] = CHSV(0,0,255);
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
+  {
+    leds[peakHeight * ROW_SIZE + x] = CHSV(0,0,255);
+  }
 }
 
 void AudioVisualizer::outrunPeak(int band) 
 {
   int peakHeight = TOP - peak[band] - 1;
-  leds[peakHeight * ROW_SIZE + band] = ColorFromPalette(outrunPal, peakHeight * (255 / ROW_SIZE));
+  int xStart = width * band;
+  for (int x = xStart; x < xStart + width; x++) 
+  {
+    leds[peakHeight * ROW_SIZE + x] = ColorFromPalette(outrunPal, peakHeight * (255 / ROW_SIZE));
+  }
 }
 
 void AudioVisualizer::resetBands()

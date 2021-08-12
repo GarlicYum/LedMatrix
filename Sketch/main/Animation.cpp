@@ -22,14 +22,14 @@ void Animation::updateAnim(CRGB* leds)
   {
     for(int i = 0; i < NUM_LEDS; i++)
     {
-      leds[i] = pgm_read_dword(&(_frames[_frameIndices[_currentFrameCount] * NUM_LEDS + Helpers::convertIndex(i)]));
+      leds[Helpers::convertIndex(i)] = pgm_read_dword(&(_frames[_frameIndices[_currentFrameCount] * NUM_LEDS + i]));
     }
   }
   else
   {
     for(int i = 0; i < NUM_LEDS; i++)
     {
-      leds[i] = pgm_read_dword(&(_frames[_currentFrameCount * NUM_LEDS + Helpers::convertIndex(i)]));
+      leds[Helpers::convertIndex(i)] = pgm_read_dword(&(_frames[_currentFrameCount * NUM_LEDS + i]));
     }
   }
    

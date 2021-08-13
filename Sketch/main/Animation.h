@@ -7,7 +7,7 @@ class Animation
 {
   public:
     Animation();
-    Animation(int frameCount, int tickCount, int delayTime, const long* frames, const int* frameIndices = NULL);
+    Animation(int frameCount, int tickCount, int delayTime, const long* frames, const int* frameIndices = NULL, float colorBrightness = 1.0f);
     
     void updateAnim(CRGB* leds);
   
@@ -19,6 +19,7 @@ class Animation
     const int* _frameIndices;
     int _currentTickCount;
     int _currentFrameCount;
+    float _colorBrightness;
 };
 
 #endif

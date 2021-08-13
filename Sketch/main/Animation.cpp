@@ -2,12 +2,10 @@
 #include "Helpers.h"
 #include "Constants.h"
 
-#define COLOR_BRIGHTNESS 1.0
-
 Animation::Animation()
 {}
 
-Animation::Animation(int frameCount, int tickCount, int delayTime, const long* frames, const int* frameIndices)
+Animation::Animation(int frameCount, int tickCount, int delayTime, const long* frames, const int* frameIndices, float colorBrightness)
 : _frameCount(frameCount)
 , _tickCount(tickCount)
 , _delayTime(delayTime)
@@ -15,6 +13,7 @@ Animation::Animation(int frameCount, int tickCount, int delayTime, const long* f
 , _currentFrameCount(0)
 , _frames(frames)
 , _frameIndices(frameIndices)
+, _colorBrightness(colorBrightness)
 {
 }
     
@@ -25,10 +24,10 @@ void Animation::updateAnim(CRGB* leds)
     for(int i = 0; i < NUM_LEDS; i++)
     {
       unsigned int color = pgm_read_dword(&(_frames[_frameIndices[_currentFrameCount] * NUM_LEDS + i]));
-      byte r = (byte)((double)((color & 0xFF000000) >> 24) * COLOR_BRIGHTNESS);
-      byte g = (byte)((double)((color & 0xFF000000) >> 16) * COLOR_BRIGHTNESS);
-      byte b = (byte)((double)((color & 0xFF000000) >> 8) * COLOR_BRIGHTNESS);
-      byte a = (byte)((double)((color & 0xFF000000) >> 0) * COLOR_BRIGHTNESS);
+      byte r = (byte)((float)((color & 0xFF000000) >> 24) * _colorBrightness);
+      byte g = (byte)((float)((color & 0x00FF0000) >> 16) * _colorBrightness);
+      byte b = (byte)((float)((color & 0x0000FF00) >> 8) * _colorBrightness);
+      byte a = (byte)((float)((color & 0x000000FF) >> 0) * _colorBrightness);
 
       color = r << 24 + g << 16 + b << 8 + a;
 
@@ -40,10 +39,10 @@ void Animation::updateAnim(CRGB* leds)
     for(int i = 0; i < NUM_LEDS; i++)
     {
       unsigned int color = pgm_read_dword(&(_frames[_currentFrameCount * NUM_LEDS + i]));
-      byte r = (byte)((double)((color & 0xFF000000) >> 24) * COLOR_BRIGHTNESS);
-      byte g = (byte)((double)((color & 0xFF000000) >> 16) * COLOR_BRIGHTNESS);
-      byte b = (byte)((double)((color & 0xFF000000) >> 8) * COLOR_BRIGHTNESS);
-      byte a = (byte)((double)((color & 0xFF000000) >> 0) * COLOR_BRIGHTNESS);
+      byte r = (byte)((float)((color & 0xFF000000) >> 24) * _colorBrightness);
+      byte g = (byte)((float)((color & 0x00FF0000) >> 16) * _colorBrightness);
+      byte b = (byte)((float)((color & 0x0000FF00) >> 8) * _colorBrightness);
+      byte a = (byte)((float)((color & 0x000000FF) >> 0) * _colorBrightness);
 
       color = r << 24 + g << 16 + b << 8 + a;
       
